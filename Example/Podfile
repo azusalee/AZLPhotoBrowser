@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '8.0'
+
+target 'AZLPhotoBrowser_Example' do
+  pod 'AZLPhotoBrowser', :path => '../'
+
+  target 'AZLPhotoBrowser_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
