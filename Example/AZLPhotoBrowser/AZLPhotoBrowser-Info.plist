@@ -28,6 +28,12 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSCameraUsageDescription</key>
+	<string>使用相機權限</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>使用添加图片到相冊權限</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>使用相冊權限</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

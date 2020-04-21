@@ -10,6 +10,8 @@
 #import <AZLPhotoBrowser/AZLPhotoBrowser.h>
 #import <SDWebImage/SDWebImage.h>
 #import <AZLExtend/AZLExtend.h>
+#import <Photos/Photos.h>
+#import <AZLPhotoBrowser/AZLAlbumViewController.h>
 
 @interface AZLViewController ()
 
@@ -60,6 +62,8 @@
         ++index;
     }
     self.models = models;
+    
+    //[self setup];
 }
 
 - (void)imageDidTap:(UITapGestureRecognizer *)gesture {
@@ -75,5 +79,12 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (IBAction)albumDidTap:(id)sender {
+    [AZLAlbumViewController showAlbum:^(NSArray<AZLAlbumAssetModel *> * _Nonnull selectModels) {
+        
+    }];
+}
+
 
 @end

@@ -192,7 +192,6 @@
     if (self.showingIndex != showingIndex) {
         self.showingIndex = showingIndex;
     }
-    
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -208,7 +207,17 @@
     cell.originUrl = model.originUrlString;
     [cell.scrollView setZoomScale:1];
     [cell setImageWidth:model.width height:model.height];
-    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:model.originUrlString] placeholderImage:model.placeholdImage];
+    
+    if (model.image != nil) {
+        cell.imageView.image = model.image;
+    }else if (model.imageData != nil || model.asset != nil) {
+        __weak AZLPhotoBrowserCollectionViewCell *weakCell = cell;
+        [model requestImage:^(UIImage * _Nullable image) {
+            weakCell.imageView.image = image;
+        }];
+    }else{
+        [cell.imageView sd_setImageWithURL:[NSURL URLWithString:model.originUrlString] placeholderImage:model.placeholdImage];
+    }
     
     return cell;
 }
