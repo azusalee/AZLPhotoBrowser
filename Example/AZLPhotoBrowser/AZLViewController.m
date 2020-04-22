@@ -81,8 +81,8 @@
 }
 
 - (IBAction)albumDidTap:(id)sender {
-    [AZLAlbumViewController showAlbum:^(NSArray<AZLPhotoBrowserModel *> * _Nonnull selectModels) {
-        
+    [AZLAlbumViewController showAlbum:^(NSArray<AZLAlbumResult *> * _Nonnull results) {
+        NSLog(@"選擇了%ld張圖", results.count);
     }];
 }
 

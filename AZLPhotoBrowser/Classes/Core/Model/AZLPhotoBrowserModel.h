@@ -28,21 +28,20 @@ NS_ASSUME_NONNULL_BEGIN
 /// 大圖網絡url
 @property (nonatomic, strong, nullable) NSString *originUrlString;
 
-/// 圖片數據
-@property (nonatomic, strong, nullable) NSData *imageData;
 /// asset對象
 @property (nonatomic, strong, nullable) PHAsset *asset;
+/// 圖片數據
+@property (nonatomic, strong, nullable) NSData *imageData;
 /// UIImage對象
 @property (nonatomic, strong, nullable) UIImage *image;
-
 /// 是否原圖
 @property (nonatomic, assign) BOOL isOrigin;
+
 
 // 如果imageData和image沒有值，會根據設置的asset來獲得圖片，並設置imageData和image的值
 // 注意佔用內存問題，因為image是解壓後的圖片，佔用的空間可能會很大，可以通過手動設置image為nil來釋放緩存
 /// 獲取圖片
 - (void)requestImage:(void (^)(UIImage *_Nullable image))resultHandler;
-
 /// 獲取圖片數據
 - (void)requestImageData:(void (^)(NSData *_Nullable imageData))resultHandler;
 

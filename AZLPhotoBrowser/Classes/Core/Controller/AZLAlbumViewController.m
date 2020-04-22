@@ -231,11 +231,26 @@
             [selectModel requestImageData:^(NSData * _Nullable imageData) {
                 processCount += 1;
                 if (selectCount == processCount) {
-                    weakSelf.completeBlock(selectArray);
                     [weakSelf dismissViewControllerAnimated:YES completion:nil];
+                    [weakSelf doneWithSelectArray:selectArray];
                 }
             }];
         } 
+    }
+}
+
+- (void)doneWithSelectArray:(NSArray<AZLPhotoBrowserModel*>*)selectArray {
+    if (self.completeBlock) {
+        NSMutableArray *resultArray = [[NSMutableArray alloc] init];
+        for (AZLPhotoBrowserModel *photoModel in selectArray) {
+            AZLAlbumResult *result = [[AZLAlbumResult alloc] init];
+            result.width = photoModel.width;
+            result.height = photoModel.height;
+            result.isAnimate = photoModel.isAnimate;
+            result.imageData = photoModel.imageData;
+            [resultArray addObject:result];
+        }
+        self.completeBlock(resultArray);
     }
 }
 
