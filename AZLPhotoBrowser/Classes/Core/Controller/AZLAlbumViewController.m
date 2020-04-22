@@ -390,7 +390,7 @@
     
     cell.titleLabel.text = [NSString stringWithFormat:@"%@ (%ld)", albumModel.title, albumModel.photoModelArray.count];
     if (albumModel.photoModelArray.count > 0) {
-        AZLPhotoBrowserModel *photoModel = albumModel.photoModelArray[0];
+        AZLPhotoBrowserModel *photoModel = [albumModel.photoModelArray lastObject];
         __weak AZLAlbumTableViewCell *weakCell = cell;
         [[PHImageManager defaultManager] requestImageForAsset:photoModel.asset targetSize:CGSizeMake(64, 64) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
             weakCell.lastImageView.image = result;

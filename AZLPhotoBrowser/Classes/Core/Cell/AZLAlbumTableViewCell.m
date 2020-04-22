@@ -41,6 +41,8 @@
     self.backgroundColor = [UIColor clearColor];
     self.contentView.backgroundColor = [UIColor clearColor];
     self.lastImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 64, 64)];
+    self.lastImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.lastImageView.clipsToBounds = YES;
     [self.contentView addSubview:self.lastImageView];
     
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(79, 0, [UIScreen mainScreen].bounds.size.width-94, 64)];

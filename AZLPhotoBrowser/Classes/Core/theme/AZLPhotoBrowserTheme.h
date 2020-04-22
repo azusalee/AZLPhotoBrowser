@@ -32,6 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 主要文字色
 @property (nonatomic, strong) UIColor *textColor;
 
+/// 返回圖片
+@property (nonatomic, strong) UIImage *backImage;
+
 @end
 
 NS_ASSUME_NONNULL_END
