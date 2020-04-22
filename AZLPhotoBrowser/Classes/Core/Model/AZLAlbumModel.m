@@ -26,11 +26,11 @@
     self.modelArray = [[NSMutableArray alloc] init];
 }
 
-- (void)addAssetModel:(AZLAlbumAssetModel *)assetModel{
-    [self.modelArray addObject:assetModel];
+- (void)addPhotoModel:(AZLPhotoBrowserModel *)photoModel{
+    [self.modelArray addObject:photoModel];
 }
 
-- (NSArray<AZLAlbumAssetModel *> *)assetModelArray{
+- (NSArray<AZLPhotoBrowserModel *> *)photoModelArray{
     return self.modelArray;
 }
 

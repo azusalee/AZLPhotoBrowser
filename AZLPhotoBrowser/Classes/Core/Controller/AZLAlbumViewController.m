@@ -17,7 +17,7 @@
 @interface AZLAlbumViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, AZLAlbumAssetCollectionViewCellDelegate>
 
 @property (nonatomic, strong) NSMutableArray<AZLAlbumModel*> *albumArray;
-@property (nonatomic, strong) NSMutableArray<AZLAlbumAssetModel*> *selectAssetArray;
+@property (nonatomic, strong) NSMutableArray<AZLPhotoBrowserModel*> *selectPhotoArray;
 @property (nonatomic, strong) UICollectionView *photoCollectionView;
 @property (nonatomic, assign) NSInteger selectAlbumIndex;
 
@@ -84,6 +84,52 @@
     [self setupUI];
     [self setupNavView];
     [self setupBottomView];
+}
+
+- (void)setup{
+    self.selectPhotoArray = [[NSMutableArray alloc] init];
+    self.albumArray = [[NSMutableArray alloc] init];
+    NSMutableDictionary *assetDict = [[NSMutableDictionary alloc] init];
+    //PHFetchOptions *option = nil;
+    // 全部圖
+    AZLAlbumModel *allAlbumModel = [[AZLAlbumModel alloc] init];
+    allAlbumModel.title = @"全部";
+    PHFetchResult<PHAssetCollection *> *allResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
+    for (PHAssetCollection *collection in allResult) {
+        PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
+        for (PHAsset *asset in assets) {
+            if (asset.mediaType == PHAssetMediaTypeImage) {
+                // 只處理圖片類型
+                AZLPhotoBrowserModel *photoModel = [[AZLPhotoBrowserModel alloc] init];
+                photoModel.asset = asset;
+                photoModel.width = asset.pixelWidth/[UIScreen mainScreen].scale;
+                photoModel.height = asset.pixelHeight/[UIScreen mainScreen].scale;
+                [allAlbumModel addPhotoModel:photoModel];
+                assetDict[asset.localIdentifier] = photoModel;
+            }
+        }
+    }
+    [self.albumArray addObject:allAlbumModel];
+    
+    if (@available(iOS 11, *)) {
+        AZLAlbumModel *animateAlbumModel = [[AZLAlbumModel alloc] init];
+        animateAlbumModel.title = @"動圖";
+        // 動圖
+        PHFetchResult<PHAssetCollection *> *animateResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumAnimated options:nil];
+        for (PHAssetCollection *collection in animateResult) {
+            PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
+            for (PHAsset *asset in assets) {
+                if (assetDict[asset.localIdentifier] != nil) {
+                    AZLPhotoBrowserModel *photoModel = assetDict[asset.localIdentifier];
+                    photoModel.isAnimate = YES;
+                    [animateAlbumModel addPhotoModel:photoModel];
+                }
+            }
+        }
+        [self.albumArray addObject:animateAlbumModel];
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 - (void)setupNavView{
@@ -171,63 +217,17 @@
     
 }
 
-- (void)setup{
-    self.selectAssetArray = [[NSMutableArray alloc] init];
-    self.albumArray = [[NSMutableArray alloc] init];
-    NSMutableDictionary *assetDict = [[NSMutableDictionary alloc] init];
-    //PHFetchOptions *option = nil;
-    // 全部圖
-    AZLAlbumModel *allAlbumModel = [[AZLAlbumModel alloc] init];
-    allAlbumModel.title = @"全部";
-    PHFetchResult<PHAssetCollection *> *allResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
-    for (PHAssetCollection *collection in allResult) {
-        PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
-        for (PHAsset *asset in assets) {
-            if (asset.mediaType == PHAssetMediaTypeImage) {
-                // 只處理圖片類型
-                AZLAlbumAssetModel *assetModel = [[AZLAlbumAssetModel alloc] init];
-                assetModel.asset = asset;
-                [allAlbumModel addAssetModel:assetModel];
-                assetDict[asset.localIdentifier] = assetModel;
-            }
-        }
-    }
-    [self.albumArray addObject:allAlbumModel];
-    
-    if (@available(iOS 11, *)) {
-        AZLAlbumModel *animateAlbumModel = [[AZLAlbumModel alloc] init];
-        animateAlbumModel.title = @"動圖";
-        // 動圖
-        PHFetchResult<PHAssetCollection *> *animateResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumAnimated options:nil];
-        for (PHAssetCollection *collection in animateResult) {
-            PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
-            for (PHAsset *asset in assets) {
-                if (assetDict[asset.localIdentifier] != nil) {
-                    AZLAlbumAssetModel *assetModel = assetDict[asset.localIdentifier];
-                    assetModel.isAnimate = YES;
-                    [animateAlbumModel addAssetModel:assetModel];
-                }
-            }
-        }
-        [self.albumArray addObject:animateAlbumModel];
-    } else {
-        // Fallback on earlier versions
-    }
-    
-    
-}
-
 - (void)leftBarItemDidTap:(id)sender{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)doneDidTap:(id)sender{
     if (self.completeBlock) {
-        NSInteger selectCount = self.selectAssetArray.count;
+        NSInteger selectCount = self.selectPhotoArray.count;
         __block NSInteger processCount = 0;
-        NSArray *selectArray = self.selectAssetArray.copy;
+        NSArray *selectArray = self.selectPhotoArray.copy;
         __weak AZLAlbumViewController *weakSelf = self;
-        for (AZLAlbumAssetModel *selectModel in selectArray) {
+        for (AZLPhotoBrowserModel *selectModel in selectArray) {
             [selectModel requestImageData:^(NSData * _Nullable imageData) {
                 processCount += 1;
                 if (selectCount == processCount) {
@@ -271,7 +271,7 @@
 }
 
 - (void)updateDoneButton{
-    if (self.selectAssetArray.count > 0) {
+    if (self.selectPhotoArray.count > 0) {
         [self.bottomDoneButton setTitle:@"完成" forState:UIControlStateNormal];
         [self.bottomDoneButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.enableTextColor forState:UIControlStateNormal];
         self.bottomDoneButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;
@@ -287,7 +287,7 @@
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     AZLAlbumModel *albumModel = self.albumArray[self.selectAlbumIndex];
-    return albumModel.assetModelArray.count;
+    return albumModel.photoModelArray.count;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -296,15 +296,15 @@
     cell.index = indexPath.row;
     cell.delegate = self;
     AZLAlbumModel *albumModel = self.albumArray[self.selectAlbumIndex];
-    AZLAlbumAssetModel *assetModel = albumModel.assetModelArray[indexPath.row];
-    if (assetModel.isAnimate) {
+    AZLPhotoBrowserModel *photoModel = albumModel.photoModelArray[indexPath.row];
+    if (photoModel.isAnimate) {
         cell.extLabel.text = @"GIF";
         cell.extLabel.hidden = NO;
     }else{
         cell.extLabel.hidden = YES;
     }
-    if ([self.selectAssetArray containsObject:assetModel]) {
-        NSUInteger selectIndex = [self.selectAssetArray indexOfObject:assetModel]+1;
+    if ([self.selectPhotoArray containsObject:photoModel]) {
+        NSUInteger selectIndex = [self.selectPhotoArray indexOfObject:photoModel]+1;
         cell.selectButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;
         [cell.selectButton setTitle:[NSString stringWithFormat:@"%ld", selectIndex] forState:UIControlStateNormal];
         cell.selectButton.layer.borderColor = nil;
@@ -317,7 +317,7 @@
     }
     
     __weak AZLAlbumAssetCollectionViewCell *weakCell = cell;
-    [[PHImageManager defaultManager] requestImageForAsset:assetModel.asset targetSize:CGSizeMake(self.cellWidth, self.cellWidth) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    [[PHImageManager defaultManager] requestImageForAsset:photoModel.asset targetSize:CGSizeMake(self.cellWidth, self.cellWidth) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         weakCell.imageView.image = result;
     }];
     
@@ -327,37 +327,22 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     [collectionView deselectItemAtIndexPath:indexPath animated:NO];
     AZLAlbumModel *albumModel = self.albumArray[self.selectAlbumIndex];
-    AZLAlbumAssetModel *assetModel = albumModel.assetModelArray[indexPath.row];
-    if (self.selectAssetArray.count == self.maxCount && [self.selectAssetArray containsObject:assetModel] == false) {
+    AZLPhotoBrowserModel *photoModel = albumModel.photoModelArray[indexPath.row];
+    if (self.selectPhotoArray.count == self.maxCount && [self.selectPhotoArray containsObject:photoModel] == false) {
         // 選擇到達最大數量且所點圖片不是選擇的圖，不處理
         return;
     }
     
-    CGFloat scale = [UIScreen mainScreen].scale;
     NSMutableArray *photoArray = [[NSMutableArray alloc] init];
     NSMutableArray *selectPhotoArray = [[NSMutableArray alloc] init];
-    for (AZLAlbumAssetModel *selectAsset in self.selectAssetArray) {
-        AZLPhotoBrowserModel *photoModel = [[AZLPhotoBrowserModel alloc] init];
-        photoModel.width = selectAsset.asset.pixelWidth/scale;
-        photoModel.height = selectAsset.asset.pixelHeight/scale;
-        photoModel.isAnimate = selectAsset.isAnimate;
-        photoModel.asset = selectAsset.asset;
-        photoModel.albumAssetModel = selectAsset;
-        [photoArray addObject:photoModel];
-        [selectPhotoArray addObject:photoModel];
-    }
+    [photoArray addObjectsFromArray:self.selectPhotoArray];
+    [selectPhotoArray addObjectsFromArray:self.selectPhotoArray];
     NSInteger showIndex = 0;
-    if ([self.selectAssetArray containsObject:assetModel] == false) {
-        AZLPhotoBrowserModel *photoModel = [[AZLPhotoBrowserModel alloc] init];
-        photoModel.width = assetModel.asset.pixelWidth/scale;
-        photoModel.height = assetModel.asset.pixelHeight/scale;
-        photoModel.isAnimate = assetModel.isAnimate;
-        photoModel.asset = assetModel.asset;
-        photoModel.albumAssetModel = assetModel;
+    if ([self.selectPhotoArray containsObject:photoModel] == false) {
         [photoArray addObject:photoModel];
         showIndex = photoArray.count-1;
     }else{
-        showIndex = [self.selectAssetArray indexOfObject:assetModel];
+        showIndex = [self.selectPhotoArray indexOfObject:photoModel];
     }
     AZLPhotoBrowserEditViewController *controller = [[AZLPhotoBrowserEditViewController alloc] init];
     [controller addPhotoModels:photoArray];
@@ -365,9 +350,9 @@
     controller.showingIndex = showIndex;
     __weak AZLAlbumViewController *weakSelf = self;
     [controller setCompleteBlock:^(NSArray<AZLPhotoBrowserModel *> * _Nonnull selectModels) {
-        [weakSelf.selectAssetArray removeAllObjects];
+        [weakSelf.selectPhotoArray removeAllObjects];
         for (AZLPhotoBrowserModel *selectPhotoModel in selectModels) {
-            [weakSelf.selectAssetArray addObject:selectPhotoModel.albumAssetModel];
+            [weakSelf.selectPhotoArray addObject:selectPhotoModel];
         }
         [weakSelf.photoCollectionView reloadData];
         [weakSelf updateDoneButton];
@@ -388,11 +373,11 @@
     AZLAlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AZLAlbumTableViewCell"];
     AZLAlbumModel *albumModel = self.albumArray[indexPath.row];
     
-    cell.titleLabel.text = [NSString stringWithFormat:@"%@ (%ld)", albumModel.title, albumModel.assetModelArray.count];
-    if (albumModel.assetModelArray.count > 0) {
-        AZLAlbumAssetModel *assetModel = albumModel.assetModelArray[0];
+    cell.titleLabel.text = [NSString stringWithFormat:@"%@ (%ld)", albumModel.title, albumModel.photoModelArray.count];
+    if (albumModel.photoModelArray.count > 0) {
+        AZLPhotoBrowserModel *photoModel = albumModel.photoModelArray[0];
         __weak AZLAlbumTableViewCell *weakCell = cell;
-        [[PHImageManager defaultManager] requestImageForAsset:assetModel.asset targetSize:CGSizeMake(64, 64) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+        [[PHImageManager defaultManager] requestImageForAsset:photoModel.asset targetSize:CGSizeMake(64, 64) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
             weakCell.lastImageView.image = result;
         }];
     }
@@ -410,15 +395,15 @@
 
 - (void)albumAssetCollectionViewCell:(AZLAlbumAssetCollectionViewCell *)cell didSelectAtIndex:(NSInteger)index{
     AZLAlbumModel *albumModel = self.albumArray[self.selectAlbumIndex];
-    AZLAlbumAssetModel *assetModel = albumModel.assetModelArray[index];
-    if ([self.selectAssetArray containsObject:assetModel]) {
-        [self.selectAssetArray removeObject:assetModel];
+    AZLPhotoBrowserModel *photoModel = albumModel.photoModelArray[index];
+    if ([self.selectPhotoArray containsObject:photoModel]) {
+        [self.selectPhotoArray removeObject:photoModel];
         cell.selectButton.backgroundColor = [UIColor clearColor];
         [cell.selectButton setTitle:@"" forState:UIControlStateNormal];
         cell.selectButton.layer.borderColor = [UIColor whiteColor].CGColor;
         cell.selectButton.layer.borderWidth = 1;
     }else{
-        if (self.selectAssetArray.count == self.maxCount) {
+        if (self.selectPhotoArray.count == self.maxCount) {
             // 大於最大選擇數
             UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"你最多只能選擇%ld張照片", self.maxCount] preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -429,15 +414,23 @@
             [self presentViewController:alertViewController animated:YES completion:nil];
             return;
         }
-        [self.selectAssetArray addObject:assetModel];
+        [self.selectPhotoArray addObject:photoModel];
         
-        NSUInteger selectIndex = self.selectAssetArray.count;
+        NSUInteger selectIndex = self.selectPhotoArray.count;
         cell.selectButton.backgroundColor = [UIColor greenColor];
         [cell.selectButton setTitle:[NSString stringWithFormat:@"%ld", selectIndex] forState:UIControlStateNormal];
         cell.selectButton.layer.borderColor = nil;
         cell.selectButton.layer.borderWidth = 0;
     }
     [self updateDoneButton];
+}
+
+- (void)didReceiveMemoryWarning{
+    [super didReceiveMemoryWarning];
+    AZLAlbumModel *album = self.albumArray[0];
+    for (AZLPhotoBrowserModel *photoModel in album.photoModelArray) {
+        photoModel.image = nil;
+    }
 }
 
 /*

@@ -6,11 +6,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AZLAlbumAssetModel.h"
+#import "AZLPhotoBrowserModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void(^AZLAlbumCompleteBlock)(NSArray<AZLAlbumAssetModel*> *selectModels);
+typedef void(^AZLAlbumCompleteBlock)(NSArray<AZLPhotoBrowserModel*> *selectModels);
 
 @interface AZLAlbumViewController : UIViewController
 

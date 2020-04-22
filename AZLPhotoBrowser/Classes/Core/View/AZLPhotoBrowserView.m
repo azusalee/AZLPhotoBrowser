@@ -18,7 +18,6 @@
 @property (nonatomic, assign) CGFloat minWidth;
 @property (nonatomic, assign) CGFloat minHeight;
 
-
 @property (nonatomic, assign) CGFloat maxScale;
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGRect startRect;
@@ -38,7 +37,6 @@
     }
     return self;
 }
-
 
 - (void)setup{
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
@@ -228,7 +226,6 @@
         }else{
             [self updateMaxImageWithPoint:location];
         }
-
     }
 }
 

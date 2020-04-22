@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AZLAlbumAssetModel.h"
+#import "AZLPhotoBrowserModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -14,9 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 標題
 @property (nonatomic, strong) NSString *title;
-@property (nonatomic, readonly) NSArray<AZLAlbumAssetModel*> *assetModelArray;
+@property (nonatomic, readonly) NSArray<AZLPhotoBrowserModel*> *photoModelArray;
 
-- (void)addAssetModel:(AZLAlbumAssetModel*)assetModel;
+- (void)addPhotoModel:(AZLPhotoBrowserModel*)photoModel;
 
 @end
 

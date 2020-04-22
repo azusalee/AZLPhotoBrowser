@@ -8,25 +8,10 @@
 
 #import "AZLPhotoBrowserCollectionViewCell.h"
 #import <AZLExtend/AZLExtend.h>
-#import "UIViewController+AZLTopController.h"
 #import <SDWebImage/SDImageCache.h>
 #import <Photos/Photos.h>
 
-@interface AZLPhotoBrowserCollectionViewCell()<UIGestureRecognizerDelegate>
-
-@property (nonatomic, assign) CGFloat imageWidth;
-@property (nonatomic, assign) CGFloat imageHeight;
-@property (nonatomic, assign) CGFloat imageAspect;
-
-@property (nonatomic, assign) CGFloat maxWidth;
-@property (nonatomic, assign) CGFloat maxHeight;
-@property (nonatomic, assign) CGFloat minWidth;
-@property (nonatomic, assign) CGFloat minHeight;
-
-
-@property (nonatomic, assign) CGFloat maxScale;
-@property (nonatomic, assign) CGPoint startPoint;
-@property (nonatomic, assign) CGRect startRect;
+@interface AZLPhotoBrowserCollectionViewCell()
 
 @end
 

@@ -81,7 +81,7 @@
 }
 
 - (IBAction)albumDidTap:(id)sender {
-    [AZLAlbumViewController showAlbum:^(NSArray<AZLAlbumAssetModel *> * _Nonnull selectModels) {
+    [AZLAlbumViewController showAlbum:^(NSArray<AZLPhotoBrowserModel *> * _Nonnull selectModels) {
         
     }];
 }

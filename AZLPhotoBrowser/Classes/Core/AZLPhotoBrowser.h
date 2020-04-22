@@ -8,10 +8,11 @@
 #ifndef ALExtend_h
 #define ALExtend_h
 
-#import "AZLPhotoBrowserCollectionViewCell.h"
-#import "AZLPhotoBrowserViewController.h"
-#import "AZLPhotoBrowserModel.h"
 #import "AZLPhotoBrowserManager.h"
+#import "AZLPhotoBrowserViewController.h"
+#import "AZLPhotoEditViewController.h"
+#import "AZLAlbumViewController.h"
+
 
 
 #endif /* ALExtend_h */

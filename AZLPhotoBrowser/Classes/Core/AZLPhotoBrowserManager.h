@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AZLPhotoBrowserManager : NSObject
 
+/// 單例
 + (instancetype)sharedInstance;
 
 /// 主題配置(顏色等)

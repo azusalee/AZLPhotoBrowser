@@ -48,6 +48,25 @@
     }];
 }
 
+- (void)requestImageData:(void (^)(NSData *_Nullable imageData))resultHandler{
+    if (self.imageData) {
+        if (resultHandler) {
+            resultHandler(self.imageData);
+        };
+    }
+    
+    __weak AZLPhotoBrowserModel *weakSelf = self;
+    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+    option.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
+    option.resizeMode = PHImageRequestOptionsResizeModeFast;
+    [[PHImageManager defaultManager] requestImageDataForAsset:self.asset options:option resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+        weakSelf.imageData = imageData;
+        if (resultHandler) {
+            resultHandler(weakSelf.imageData);
+        };
+    }];
+}
+
 - (UIImage *)getImageByData{
     if (self.isAnimate) {
         UIImage *image = [UIImage sd_imageWithGIFData:self.imageData];
