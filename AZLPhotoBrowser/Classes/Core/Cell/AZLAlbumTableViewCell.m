@@ -6,6 +6,7 @@
 //
 
 #import "AZLAlbumTableViewCell.h"
+#import "AZLPhotoBrowserManager.h"
 
 @implementation AZLAlbumTableViewCell
 
@@ -44,11 +45,11 @@
     
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(79, 0, [UIScreen mainScreen].bounds.size.width-94, 64)];
     self.titleLabel.font = [UIFont systemFontOfSize:17];
-    self.titleLabel.textColor = [UIColor whiteColor];
+    self.titleLabel.textColor = [AZLPhotoBrowserManager sharedInstance].theme.textColor;
     [self.contentView addSubview:self.titleLabel];
     
     self.sepLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 63, [UIScreen mainScreen].bounds.size.width, 1)];
-    self.sepLineView.backgroundColor = [UIColor lightGrayColor];
+    self.sepLineView.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.sepLineColor;
     [self.contentView addSubview:self.sepLineView];
 }
 

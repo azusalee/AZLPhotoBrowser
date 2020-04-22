@@ -11,7 +11,8 @@
 #import "AZLAlbumAssetCollectionViewCell.h"
 #import "AZLAlbumTableViewCell.h"
 #import <AZLExtend/AZLExtend.h>
-#import "AZLPhotoBrowserViewController.h"
+#import "AZLPhotoBrowserEditViewController.h"
+#import "AZLPhotoBrowserManager.h"
 
 @interface AZLAlbumViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource, AZLAlbumAssetCollectionViewCellDelegate>
 
@@ -86,16 +87,20 @@
 }
 
 - (void)setupNavView{
-    
-    self.customNavView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, self.navigationController.navigationBar.bounds.size.height+[UIApplication sharedApplication].statusBarFrame.size.height)];
-    self.customNavView.backgroundColor = [UIColor blackColor];
+    CGFloat navBarHeight = 44;
+    self.customNavView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, navBarHeight+[UIApplication sharedApplication].statusBarFrame.size.height)];
+    self.customNavView.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.barBackgroundColor;
     
     [self.view addSubview:self.customNavView];
     
-    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.customNavView.bounds.size.height-44, 80, 44)];
+    UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    cancelButton.tintColor = [AZLPhotoBrowserManager sharedInstance].theme.barTintColor;
     [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
-    cancelButton.titleLabel.font = [UIFont systemFontOfSize:15];
-    [cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    cancelButton.titleLabel.font = [UIFont systemFontOfSize:17];
+    [cancelButton sizeToFit];
+    cancelButton.frame = CGRectMake(15, self.customNavView.bounds.size.height-44, cancelButton.width, 44);
+    
+    [cancelButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.barTintColor forState:UIControlStateNormal];
     [self.customNavView addSubview:cancelButton];
     [cancelButton addTarget:self action:@selector(leftBarItemDidTap:) forControlEvents:UIControlEventTouchUpInside];
 //    self.title = @"相冊";
@@ -106,7 +111,7 @@
     
     self.titleLabel = [[UILabel alloc] initWithFrame:self.titleView.bounds];
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.titleLabel.textColor = [UIColor whiteColor];
+    self.titleLabel.textColor = [AZLPhotoBrowserManager sharedInstance].theme.barTintColor;
     self.titleLabel.font = [UIFont boldSystemFontOfSize:18];
     [self.titleView addSubview:self.titleLabel];
     
@@ -116,22 +121,23 @@
 
 - (void)setupBottomView{
     self.bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-64, [UIScreen mainScreen].bounds.size.width, 64)];
-    self.bottomView.backgroundColor = [UIColor blackColor];
+    self.bottomView.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.barBackgroundColor;
     [self.view addSubview:self.bottomView];
     
-    self.bottomDoneButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width-95, 12, 80, 40)];
+    self.bottomDoneButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.bottomDoneButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-95, 12, 80, 40);
     [self.bottomDoneButton setTitle:@"完成" forState:UIControlStateNormal];
-    [self.bottomDoneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    self.bottomDoneButton.backgroundColor = [UIColor greenColor];
+    [self.bottomDoneButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.enableTextColor forState:UIControlStateNormal];
+    self.bottomDoneButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;
     [self.bottomDoneButton addTarget:self action:@selector(doneDidTap:) forControlEvents:UIControlEventTouchUpInside];
     [self.bottomView addSubview:self.bottomDoneButton];
     [self updateDoneButton];
 }
 
 - (void)setupUI{
-    self.view.backgroundColor = [UIColor darkGrayColor];
+    self.view.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.backgroundColor;
     CGFloat bottomViewHeight = 64;
-    CGFloat navViewHeight = self.navigationController.navigationBar.bounds.size.height+[UIApplication sharedApplication].statusBarFrame.size.height;
+    CGFloat navViewHeight = 44+[UIApplication sharedApplication].statusBarFrame.size.height;
     
     CGFloat cellWidth = ([UIScreen mainScreen].bounds.size.width-self.colCount+1)/self.colCount;
     self.cellWidth = cellWidth;
@@ -159,7 +165,7 @@
     self.albumTableView.delegate = self;
     self.albumTableView.dataSource = self;
     self.albumTableView.hidden = YES;
-    self.albumTableView.backgroundColor = [UIColor darkGrayColor];
+    self.albumTableView.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.backgroundColor;
     [self.albumTableView registerClass:[AZLAlbumTableViewCell class] forCellReuseIdentifier:@"AZLAlbumTableViewCell"];
     [self.view addSubview:self.albumTableView];
     
@@ -267,13 +273,13 @@
 - (void)updateDoneButton{
     if (self.selectAssetArray.count > 0) {
         [self.bottomDoneButton setTitle:@"完成" forState:UIControlStateNormal];
-        [self.bottomDoneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        self.bottomDoneButton.backgroundColor = [UIColor greenColor];
+        [self.bottomDoneButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.enableTextColor forState:UIControlStateNormal];
+        self.bottomDoneButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;
         self.bottomDoneButton.enabled = YES;
     }else{
         [self.bottomDoneButton setTitle:@"完成" forState:UIControlStateNormal];
-        [self.bottomDoneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        self.bottomDoneButton.backgroundColor = [UIColor grayColor];
+        [self.bottomDoneButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.disableTextColor forState:UIControlStateNormal];
+        self.bottomDoneButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.disableBackgroundColor;
         self.bottomDoneButton.enabled = NO;
     }
 }
@@ -299,7 +305,7 @@
     }
     if ([self.selectAssetArray containsObject:assetModel]) {
         NSUInteger selectIndex = [self.selectAssetArray indexOfObject:assetModel]+1;
-        cell.selectButton.backgroundColor = [UIColor greenColor];
+        cell.selectButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;
         [cell.selectButton setTitle:[NSString stringWithFormat:@"%ld", selectIndex] forState:UIControlStateNormal];
         cell.selectButton.layer.borderColor = nil;
         cell.selectButton.layer.borderWidth = 0;
@@ -329,13 +335,16 @@
     
     CGFloat scale = [UIScreen mainScreen].scale;
     NSMutableArray *photoArray = [[NSMutableArray alloc] init];
+    NSMutableArray *selectPhotoArray = [[NSMutableArray alloc] init];
     for (AZLAlbumAssetModel *selectAsset in self.selectAssetArray) {
         AZLPhotoBrowserModel *photoModel = [[AZLPhotoBrowserModel alloc] init];
         photoModel.width = selectAsset.asset.pixelWidth/scale;
         photoModel.height = selectAsset.asset.pixelHeight/scale;
         photoModel.isAnimate = selectAsset.isAnimate;
         photoModel.asset = selectAsset.asset;
+        photoModel.albumAssetModel = selectAsset;
         [photoArray addObject:photoModel];
+        [selectPhotoArray addObject:photoModel];
     }
     NSInteger showIndex = 0;
     if ([self.selectAssetArray containsObject:assetModel] == false) {
@@ -344,13 +353,26 @@
         photoModel.height = assetModel.asset.pixelHeight/scale;
         photoModel.isAnimate = assetModel.isAnimate;
         photoModel.asset = assetModel.asset;
+        photoModel.albumAssetModel = assetModel;
         [photoArray addObject:photoModel];
         showIndex = photoArray.count-1;
     }else{
         showIndex = [self.selectAssetArray indexOfObject:assetModel];
     }
-    AZLPhotoBrowserViewController *controller = [[AZLPhotoBrowserViewController alloc] init];
-    [controller showWithPhotoModels:photoArray index:showIndex];
+    AZLPhotoBrowserEditViewController *controller = [[AZLPhotoBrowserEditViewController alloc] init];
+    [controller addPhotoModels:photoArray];
+    [controller addSelectPhotoModels:selectPhotoArray];
+    controller.showingIndex = showIndex;
+    __weak AZLAlbumViewController *weakSelf = self;
+    [controller setCompleteBlock:^(NSArray<AZLPhotoBrowserModel *> * _Nonnull selectModels) {
+        [weakSelf.selectAssetArray removeAllObjects];
+        for (AZLPhotoBrowserModel *selectPhotoModel in selectModels) {
+            [weakSelf.selectAssetArray addObject:selectPhotoModel.albumAssetModel];
+        }
+        [weakSelf.photoCollectionView reloadData];
+        [weakSelf updateDoneButton];
+    }];
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 

@@ -16,9 +16,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSData *imageData;
 
-// 是否動圖
+/// 是否原圖
+@property (nonatomic, assign) BOOL isOrigin;
+
+/// 是否動圖
 @property (nonatomic, assign) BOOL isAnimate;
 
+/// 獲取圖片數據
 - (void)requestImageData:(void (^)(NSData *_Nullable imageData))resultHandler;
 
 @end

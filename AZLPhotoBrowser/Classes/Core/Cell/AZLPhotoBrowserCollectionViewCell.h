@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AZLPhotoBrowserView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,12 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AZLPhotoBrowserCollectionViewCell : UICollectionViewCell<UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIScrollView *scrollView;
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) AZLPhotoBrowserView *browserView;
 @property (nonatomic, strong) NSString *originUrl;
 @property (nonatomic, weak) id<AZLPhotoBrowserCollectionViewCellDelegate> delegate;
-
-- (void)setImageWidth:(CGFloat)width height:(CGFloat)height;
 
 @end
 

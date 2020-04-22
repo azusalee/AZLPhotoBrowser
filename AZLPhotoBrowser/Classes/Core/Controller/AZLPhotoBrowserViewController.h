@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UICollectionView *photoCollectionView;
 @property (nonatomic, assign) NSInteger showingIndex;
 
+- (void)addPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray;
 - (void)showWithPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray index:(NSInteger)index;
 
 - (AZLPhotoBrowserModel *)getCurrentPhotoModel;

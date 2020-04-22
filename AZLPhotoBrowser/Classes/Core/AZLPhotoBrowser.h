@@ -11,6 +11,7 @@
 #import "AZLPhotoBrowserCollectionViewCell.h"
 #import "AZLPhotoBrowserViewController.h"
 #import "AZLPhotoBrowserModel.h"
+#import "AZLPhotoBrowserManager.h"
 
 
 #endif /* ALExtend_h */

@@ -8,6 +8,10 @@
 #import "AZLAlbumAssetModel.h"
 #import <Photos/Photos.h>
 
+@interface AZLAlbumAssetModel()
+
+@end
+
 @implementation AZLAlbumAssetModel
 
 - (void)requestImageData:(void (^)(NSData *_Nullable imageData))resultHandler{

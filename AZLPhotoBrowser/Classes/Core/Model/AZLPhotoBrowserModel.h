@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AZLAlbumAssetModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 以下屬性，編輯模式下有用
 /// 是否原圖
-@property (nonatomic, assign) BOOL isOrigin;
+@property (nonatomic, strong) AZLAlbumAssetModel *albumAssetModel;
 
 /// 獲取圖片
 - (void)requestImage:(void (^)(UIImage *_Nullable image))resultHandler;

@@ -6,6 +6,7 @@
 //
 
 #import "AZLAlbumAssetCollectionViewCell.h"
+#import "AZLPhotoBrowserManager.h"
 
 @implementation AZLAlbumAssetCollectionViewCell
 
@@ -33,7 +34,7 @@
     
     self.selectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.bounds.size.width-30, 10, 20, 20)];
     self.selectButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
-    [self.selectButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.selectButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.enableTextColor forState:UIControlStateNormal];
     self.selectButton.titleLabel.font = [UIFont systemFontOfSize:15];
     self.selectButton.layer.cornerRadius = 10;
     [self.selectButton addTarget:self action:@selector(selectButtonDidTap:) forControlEvents:UIControlEventTouchUpInside];

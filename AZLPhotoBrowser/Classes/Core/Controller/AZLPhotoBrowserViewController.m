@@ -77,10 +77,10 @@
     if (rect.size.width != 0 && rect.size.height != 0) {
         AZLPhotoBrowserCollectionViewCell *cell = (AZLPhotoBrowserCollectionViewCell*)[controller.photoCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:controller.showingIndex inSection:0]];
         
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:[cell.imageView convertRect:cell.imageView.bounds toView:[UIApplication sharedApplication].keyWindow]];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:[cell.browserView.imageView convertRect:cell.browserView.imageView.bounds toView:[UIApplication sharedApplication].keyWindow]];
         imageView.clipsToBounds = YES;
         imageView.contentMode = UIViewContentModeScaleAspectFit;
-        imageView.image = cell.imageView.image;
+        imageView.image = cell.browserView.imageView.image;
         controller.view.alpha = 0;
         controller.photoCollectionView.hidden = YES;
         CGRect toRect = rect;
@@ -146,6 +146,10 @@
     return self.dataArray[self.showingIndex];
 }
 
+- (void)addPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray{
+    [self.dataArray addObjectsFromArray:photoArray];
+}
+
 - (void)showWithPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray index:(NSInteger)index{
     [self.dataArray removeAllObjects];
     [self.dataArray addObjectsFromArray:photoArray];
@@ -186,11 +190,16 @@
     [super viewDidAppear:animated];
 }
 
+- (void)showingIndexDidChange{
+    
+}
+
 #pragma mark - Delegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     NSInteger showingIndex = (scrollView.contentOffset.x/self.view.bounds.size.width)+0.5;
     if (self.showingIndex != showingIndex) {
         self.showingIndex = showingIndex;
+        [self showingIndexDidChange];
     }
 }
 
@@ -205,25 +214,30 @@
     cell.delegate = self;
     AZLPhotoBrowserModel *model = self.dataArray[indexPath.row];
     cell.originUrl = model.originUrlString;
-    [cell.scrollView setZoomScale:1];
-    [cell setImageWidth:model.width height:model.height];
+    [cell.browserView.scrollView setZoomScale:1];
+    [cell.browserView setImageWidth:model.width height:model.height];
     
     if (model.image != nil) {
-        cell.imageView.image = model.image;
+        cell.browserView.imageView.image = model.image;
     }else if (model.imageData != nil || model.asset != nil) {
+        cell.browserView.imageView.image = model.placeholdImage;
         __weak AZLPhotoBrowserCollectionViewCell *weakCell = cell;
         [model requestImage:^(UIImage * _Nullable image) {
-            weakCell.imageView.image = image;
+            weakCell.browserView.imageView.image = image;
         }];
     }else{
-        [cell.imageView sd_setImageWithURL:[NSURL URLWithString:model.originUrlString] placeholderImage:model.placeholdImage];
+        [cell.browserView.imageView sd_setImageWithURL:[NSURL URLWithString:model.originUrlString] placeholderImage:model.placeholdImage];
     }
     
     return cell;
 }
 
 - (void)azlPhotoBrowserCollectionViewCellDidTap:(AZLPhotoBrowserCollectionViewCell *)cell{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.navigationController) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 #pragma mark - UIViewControllerTransitioningDelegate過場
