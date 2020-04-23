@@ -42,8 +42,13 @@ TODO: Add long description of the pod here.
   #s.dependency 'AZLExtend'
   
   s.subspec 'Core' do |core|
-    core.source_files = 'AZLPhotoBrowser/Classes/**/*'
+    core.source_files = 'AZLPhotoBrowser/Classes/Core/**/*'
     core.dependency 'SDWebImage'
+    core.dependency 'AZLExtend'
+  end
+  
+  s.subspec 'EditTool' do |core|
+    core.source_files = 'AZLPhotoBrowser/Classes/EditTool/**/*'
     core.dependency 'AZLExtend'
   end
 end

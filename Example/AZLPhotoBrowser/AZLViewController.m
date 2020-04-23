@@ -33,6 +33,8 @@
     @{@"url":@"https://b-ssl.duitang.com/uploads/item/201706/17/20170617202755_vasTA.thumb.700_0.jpeg", @"w":@(639), @"h":@(640)},
     @{@"url":@"https://a0.att.hudong.com/27/10/01300000324235124757108108752.jpg", @"w":@(800), @"h":@(600)},
     @{@"url":@"https://a3.att.hudong.com/13/41/01300000201800122190411861466.jpg", @"w":@(512), @"h":@(384)},
+    @{@"url":@"http://img5.imgtn.bdimg.com/it/u=2444540448,3036722547&fm=26&gp=0.jpg", @"w":@(704), @"h":@(1000), @"imageName":@"image1"},
+    @{@"url":@"http://hbimg.b0.upaiyun.com/357d23d074c2954d568d1a6f86a5be09d190a45116e95-0jh9Pg_fw658", @"w":@(658), @"h":@(494)}
     ];
     NSMutableArray *models = [[NSMutableArray alloc] init];
     NSInteger index = 0;
@@ -41,6 +43,9 @@
     for (NSDictionary *dict in datas) {
         AZLPhotoBrowserModel *model = [[AZLPhotoBrowserModel alloc] init];
         model.originUrlString = dict[@"url"];
+        if (dict[@"imageName"]) {
+            model.image = [UIImage imageNamed:dict[@"imageName"]];
+        }
         model.width = [dict[@"w"] doubleValue];
         model.height = [dict[@"h"] doubleValue];
         [models addObject:model];
@@ -49,7 +54,11 @@
         imageView.userInteractionEnabled = YES;
         imageView.tag = index;
         [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageDidTap:)]];
-        [imageView sd_setImageWithURL:[NSURL URLWithString:model.originUrlString]];
+        if (model.image) {
+            imageView.image = model.image;
+        }else{
+            [imageView sd_setImageWithURL:[NSURL URLWithString:model.originUrlString]];
+        }
         [self.imageViews addObject:imageView];
         [self.view addSubview:imageView];
         

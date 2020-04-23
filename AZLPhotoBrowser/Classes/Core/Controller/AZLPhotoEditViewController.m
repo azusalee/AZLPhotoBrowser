@@ -9,6 +9,8 @@
 #import "AZLPhotoBrowserView.h"
 #import <SDWebImage/SDWebImage.h>
 #import "AZLPhotoBrowserManager.h"
+#import "AZLEditDrawView.h"
+#import "AZLColorPickView.h"
 
 @interface AZLPhotoEditViewController ()
 
@@ -17,6 +19,9 @@
 @property (nonatomic, strong) UIView *editTopView;
 @property (nonatomic, strong) UIView *editBottomView;
 @property (nonatomic, assign) BOOL isShowingEditUI;
+
+@property (nonatomic, strong) AZLEditDrawView *drawView;
+@property (nonatomic, strong) AZLColorPickView *colorPickView;
 
 @end
 
@@ -54,8 +59,8 @@
     [self.view addSubview:self.browserView];
     
     [self setupEditUI];
+    [self setDrawUI];
 }
-
 
 - (void)setupEditUI{
     //頭部
@@ -91,6 +96,23 @@
     self.editTopView.hidden = YES;
     self.editBottomView.hidden = YES;
     self.isShowingEditUI = NO;
+}
+
+- (void)setDrawUI{
+    self.drawView = [[AZLEditDrawView alloc] initWithFrame:self.browserView.imageView.bounds];
+    self.drawView.pathColor = [UIColor whiteColor];
+    self.drawView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.browserView.imageView addSubview:self.drawView];
+    self.browserView.scrollView.scrollEnabled = NO;
+    
+    self.colorPickView = [[AZLColorPickView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 30)];
+    __weak AZLPhotoEditViewController *weakSelf = self;
+    [self.colorPickView setBlock:^(UIColor * _Nonnull color) {
+        weakSelf.drawView.pathColor = color;
+    }];
+    [self.editBottomView addSubview:self.colorPickView];
+    
+    
 }
 
 - (void)leftBarItemDidTap:(id)sender {

@@ -11,7 +11,7 @@
 
 - (instancetype)init{
     if (self = [super init]) {
-        _barBackgroundColor = [UIColor blackColor];
+        _barBackgroundColor = [UIColor darkGrayColor];
         _barTintColor = [UIColor whiteColor];
         
         _enableBackgroundColor = [UIColor greenColor];
@@ -21,7 +21,7 @@
         
         _sepLineColor = [UIColor lightGrayColor];
         
-        _backgroundColor = [UIColor darkGrayColor];
+        _backgroundColor = [UIColor blackColor];
         _textColor = [UIColor whiteColor];
         [self setup];
     }

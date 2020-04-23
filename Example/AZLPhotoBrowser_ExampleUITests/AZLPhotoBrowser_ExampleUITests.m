@@ -47,10 +47,15 @@
     [image tap];
     [image tap];
     [image swipeLeft];
-    
+    [image pinchWithScale:3 velocity:1];
+    sleep(2);
+    [image tap];
+    [image tap];
+    [image pinchWithScale:0.3 velocity:-0.2];
+    sleep(2);
+    [image swipeLeft];
     [image swipeLeft];
     [image swipeRight];
-    [image swipeLeft];
     [image swipeRight];
     [image swipeRight];
     
@@ -58,6 +63,7 @@
     [app.sheets.scrollViews.otherElements.buttons[@"\u53d6\u6d88"] tap];
     
     [image tap];
+    sleep(2);
     
     // Use recording to get started writing UI tests.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
