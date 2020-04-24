@@ -41,6 +41,7 @@
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self showEditUI];
+    [self.photoCollectionView reloadData];
 }
 
 - (void)addSelectPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray{
@@ -135,6 +136,12 @@
 
 - (void)updateCurrentPhotoUI{
     AZLPhotoBrowserModel *model = [self getCurrentPhotoModel];
+    if (model.isAnimate) {
+        // 動圖不讓編輯(暫時先這樣)
+        self.editButton.hidden = YES;
+    }else{
+        self.editButton.hidden = NO;
+    }
     if ([self.selectArray containsObject:model]) {
         NSUInteger selectIndex = [self.selectArray indexOfObject:model]+1;
         self.selectButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;

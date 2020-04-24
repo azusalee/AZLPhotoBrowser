@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class PHAsset;
+@class PHAsset, AZLEditRecord;
 @interface AZLPhotoBrowserModel : NSObject
 
 /// 圖片寬(按dp算)，如果不設置，可能顯示上有問題
@@ -34,9 +34,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSData *imageData;
 /// UIImage對象
 @property (nonatomic, strong, nullable) UIImage *image;
+
+
 /// 是否原圖
 @property (nonatomic, assign) BOOL isOrigin;
-
+/// 编辑记录
+@property (nonatomic, strong, nullable) NSArray<AZLEditRecord*> *editRecords;
+/// 编辑过的图片
+@property (nonatomic, strong, nullable) UIImage *editImage;
+/// 编辑过的图片的縮率圖
+@property (nonatomic, strong, nullable) UIImage *smallEditImage;
 
 // 如果imageData和image沒有值，會根據設置的asset來獲得圖片，並設置imageData和image的值
 // 注意佔用內存問題，因為image是解壓後的圖片，佔用的空間可能會很大，可以通過手動設置image為nil來釋放緩存

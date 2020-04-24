@@ -11,8 +11,19 @@
 #import "AZLPhotoBrowserManager.h"
 #import "AZLEditDrawView.h"
 #import "AZLColorPickView.h"
+#import <AZLExtend/AZLExtend.h>
 
-@interface AZLPhotoEditViewController ()
+#import "AZLPathProviderPencil.h"
+#import "AZLPathProviderPen.h"
+
+typedef NS_ENUM(NSUInteger, AZLEditType) {
+    AZLEditTypeNone = 0,
+    AZLEditTypePencil,
+    AZLEditTypePen,
+};
+
+
+@interface AZLPhotoEditViewController () <AZLEditDrawViewDelegate>
 
 @property (nonatomic, strong) AZLPhotoBrowserView *browserView;
 
@@ -20,8 +31,19 @@
 @property (nonatomic, strong) UIView *editBottomView;
 @property (nonatomic, assign) BOOL isShowingEditUI;
 
+/// 修改圖層view
 @property (nonatomic, strong) AZLEditDrawView *drawView;
+/// 取色器view
 @property (nonatomic, strong) AZLColorPickView *colorPickView;
+
+@property (nonatomic, strong) UIButton *undoButton;
+@property (nonatomic, strong) UIButton *redoButton;
+
+@property (nonatomic, strong) UIButton *pencilButton;
+@property (nonatomic, strong) UIButton *penButton;
+@property (nonatomic, strong) UIView *editTypeIndicateView;
+
+@property (nonatomic, assign) AZLEditType editType;
 
 @end
 
@@ -80,7 +102,7 @@
     [cancelButton addTarget:self action:@selector(leftBarItemDidTap:) forControlEvents:UIControlEventTouchUpInside];
     
     //底部
-    self.editBottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-64, [UIScreen mainScreen].bounds.size.width, 64)];
+    self.editBottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-80, [UIScreen mainScreen].bounds.size.width, 80)];
     self.editBottomView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.editBottomView];
     
@@ -100,23 +122,161 @@
 
 - (void)setDrawUI{
     self.drawView = [[AZLEditDrawView alloc] initWithFrame:self.browserView.imageView.bounds];
+    self.drawView.userInteractionEnabled = NO;
+    self.drawView.delegate = self;
     self.drawView.pathColor = [UIColor whiteColor];
     self.drawView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.browserView.imageView addSubview:self.drawView];
-    self.browserView.scrollView.scrollEnabled = NO;
+    [self.drawView addEditRecords:self.photoModel.editRecords];
     
     self.colorPickView = [[AZLColorPickView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 30)];
+    self.colorPickView.hidden = YES;
     __weak AZLPhotoEditViewController *weakSelf = self;
     [self.colorPickView setBlock:^(UIColor * _Nonnull color) {
         weakSelf.drawView.pathColor = color;
     }];
     [self.editBottomView addSubview:self.colorPickView];
     
+    self.undoButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.undoButton.enabled = (self.photoModel.editRecords.count>0);
+    [self.undoButton setImage:[AZLPhotoBrowserManager sharedInstance].theme.undoImage forState:UIControlStateNormal];
+    [self.undoButton setImage:[[AZLPhotoBrowserManager sharedInstance].theme.undoImage azl_imageWithGradientTintColor:[UIColor lightTextColor]] forState:UIControlStateDisabled];
+    [self.undoButton setTintColor:[UIColor whiteColor]];
+    self.undoButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-85, 30, 30, 30);
+    [self.undoButton addTarget:self action:@selector(undoDidTap:) forControlEvents:UIControlEventTouchUpInside];
+    [self.editBottomView addSubview:self.undoButton];
     
+    self.redoButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.redoButton.enabled = NO;
+    [self.redoButton setImage:[AZLPhotoBrowserManager sharedInstance].theme.redoImage forState:UIControlStateNormal];
+    [self.redoButton setImage:[[AZLPhotoBrowserManager sharedInstance].theme.redoImage azl_imageWithGradientTintColor:[UIColor lightTextColor]] forState:UIControlStateDisabled];
+    [self.redoButton setTintColor:[UIColor whiteColor]];
+    self.redoButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-45, 30, 30, 30);
+    [self.redoButton addTarget:self action:@selector(redoDidTap:) forControlEvents:UIControlEventTouchUpInside];
+    [self.editBottomView addSubview:self.redoButton];
+    
+    self.editTypeIndicateView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    self.editTypeIndicateView.layer.borderWidth = 1;
+    self.editTypeIndicateView.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.editTypeIndicateView.hidden = YES;
+    [self.editBottomView addSubview:self.editTypeIndicateView];
+    
+    self.pencilButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.pencilButton.frame = CGRectMake(15, 38, 30, 30);
+    [self.pencilButton setTitle:@"鉛" forState:UIControlStateNormal];
+    [self.pencilButton setTintColor:[UIColor whiteColor]];
+    [self.pencilButton addTarget:self action:@selector(pencilDidTap:) forControlEvents:UIControlEventTouchUpInside];
+    [self.editBottomView addSubview:self.pencilButton];
+    
+    self.penButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.penButton.frame = CGRectMake(55, 38, 30, 30);
+    [self.penButton setTitle:@"鋼" forState:UIControlStateNormal];
+    [self.penButton setTintColor:[UIColor whiteColor]];
+    [self.penButton addTarget:self action:@selector(penDidTap:) forControlEvents:UIControlEventTouchUpInside];
+    [self.editBottomView addSubview:self.penButton];
 }
 
 - (void)leftBarItemDidTap:(id)sender {
+    [self generateEditImage];
     [self dismissViewControllerAnimated:NO completion:nil];
+}
+
+- (void)undoDidTap:(UIButton*)button {
+    [self.drawView removeLastRecord];
+}
+
+- (void)redoDidTap:(UIButton*)button {
+    [self.drawView redoLastRecord];
+}
+
+- (void)setEditType:(AZLEditType)editType{
+    _editType = editType;
+    switch (editType) {
+        case AZLEditTypeNone:
+            self.browserView.scrollView.scrollEnabled = YES;
+            self.drawView.userInteractionEnabled = NO;
+            self.editTypeIndicateView.hidden = YES;
+            self.colorPickView.hidden = YES;
+            break;
+        case AZLEditTypePencil:
+            self.browserView.scrollView.scrollEnabled = NO;
+            self.drawView.userInteractionEnabled = YES;
+            self.drawView.pathProvider = [[AZLPathProviderPencil alloc] init];
+            self.editTypeIndicateView.center = self.pencilButton.center;
+            self.editTypeIndicateView.hidden = NO;
+            self.colorPickView.hidden = NO;
+            break;
+        case AZLEditTypePen:
+            self.browserView.scrollView.scrollEnabled = NO;
+            self.drawView.userInteractionEnabled = YES;
+            self.drawView.pathProvider = [[AZLPathProviderPen alloc] init];
+            self.editTypeIndicateView.center = self.penButton.center;
+            self.editTypeIndicateView.hidden = NO;
+            self.colorPickView.hidden = NO;
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (void)pencilDidTap:(UIButton*)button {
+    if (self.editType != AZLEditTypePencil) {
+        self.editType = AZLEditTypePencil;
+    }else{
+        self.editType = AZLEditTypeNone;
+    }
+}
+
+- (void)penDidTap:(UIButton*)button{
+    if (self.editType != AZLEditTypePen) {
+        self.editType = AZLEditTypePen;
+    }else{
+        self.editType = AZLEditTypeNone;
+    }
+}
+
+- (void)generateEditImage{
+    // 生成編輯後的圖片
+    UIImage *oriImage = self.browserView.imageView.image;
+    NSArray *editRecords = [self.drawView getEditRecords];
+    if (editRecords.count > 0) {
+        CGFloat scale = [UIScreen mainScreen].scale;
+        CGRect renderRect = CGRectMake(0, 0, oriImage.size.width, oriImage.size.height);
+        if (oriImage.scale != scale) {
+            renderRect.size.width = renderRect.size.width*(oriImage.scale/scale);
+            renderRect.size.height = renderRect.size.height*(oriImage.scale/scale);
+        }
+        UIGraphicsBeginImageContextWithOptions(renderRect.size, false, scale);
+        [oriImage drawInRect:renderRect];
+        
+        for (AZLEditRecord *editRecord in editRecords) {
+            [editRecord renderWithBounds:renderRect];
+        }
+        
+        UIImage* editImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        self.photoModel.editImage = editImage;
+        if (editImage.size.width > 120) {
+            self.photoModel.smallEditImage = [editImage azl_imageFromWidth:100];
+        }else{
+            self.photoModel.smallEditImage = self.photoModel.editImage;
+        }
+        
+        self.photoModel.editRecords = editRecords;
+    }else{
+        self.photoModel.editImage = nil;
+        self.photoModel.smallEditImage = nil;
+        self.photoModel.editRecords = nil;
+    }
+}
+
+- (void)editDrawViewDidChange:(AZLEditDrawView *)drawView{
+    NSInteger editCount = [drawView getEditRecords].count;
+    NSInteger redoCount = [drawView getRedoRecords].count;
+    
+    self.redoButton.enabled = redoCount>0;
+    self.undoButton.enabled = editCount>0;
 }
 
 /*

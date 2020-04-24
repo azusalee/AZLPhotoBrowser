@@ -26,6 +26,10 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+//    UIImage *image = [UIImage imageNamed:@"undo"];
+//    NSData *imageData = UIImagePNGRepresentation(image);
+//    NSString *imageString = [imageData base64EncodedStringWithOptions:0];
+    
     CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
     CGFloat imageWidth = screenWidth/3;
     self.imageViews = [[NSMutableArray alloc] init];

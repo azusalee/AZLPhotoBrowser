@@ -34,6 +34,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 返回圖片
 @property (nonatomic, strong) UIImage *backImage;
+/// 撤銷
+@property (nonatomic, strong) UIImage *undoImage;
+/// 重做
+@property (nonatomic, strong) UIImage *redoImage;
 
 @end
 

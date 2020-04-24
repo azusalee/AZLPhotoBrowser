@@ -21,7 +21,9 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jvK-o4-yG5">
                                 <rect key="frame" x="172" y="549" width="31" height="30"/>
-                                <state key="normal" title="相冊"/>
+                                <state key="normal" title="相冊">
+                                    <color key="titleColor" red="0.19607843137254902" green="0.80392156862745101" blue="0.19607843137254902" alpha="0.84705882352941175" colorSpace="calibratedRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="albumDidTap:" destination="whP-gf-Uak" eventType="touchUpInside" id="r1z-OV-0LJ"/>
                                 </connections>

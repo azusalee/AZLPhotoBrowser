@@ -7,11 +7,12 @@
 
 #import "AZLEditDrawView.h"
 #import "AZLPathProviderPencil.h"
-#import "AZLEditRecord.h"
+
 
 @interface AZLEditDrawView() <AZLPathProviderDelegate>
 
 @property (nonatomic, strong) NSMutableArray<AZLEditRecord*> *editRecordArray;
+@property (nonatomic, strong) NSMutableArray<AZLEditRecord*> *redoRecordArray;
 @property (nonatomic, strong) AZLEditRecord *tmpEditRecord;
 
 @end
@@ -34,8 +35,49 @@
     self.opaque = NO;
     self.multipleTouchEnabled = YES;
     self.editRecordArray = [[NSMutableArray alloc] init];
+    self.redoRecordArray = [[NSMutableArray alloc] init];
     self.pathProvider = [[AZLPathProviderPencil alloc] init];
-    self.pathProvider.delegate = self;
+}
+
+- (void)setPathProvider:(AZLPathProviderBase *)pathProvider{
+    _pathProvider = pathProvider;
+    pathProvider.delegate = self;
+}
+
+- (void)addEditRecords:(NSArray<AZLEditRecord *> *)records{
+    if (records.count == 0) {
+        return;
+    }
+    [self.editRecordArray addObjectsFromArray:records];
+    [self setNeedsDisplay];
+}
+
+- (void)removeLastRecord{
+    if (self.editRecordArray.count > 0) {
+        AZLEditRecord *lastRecord = [self.editRecordArray lastObject];
+        [self.editRecordArray removeLastObject];
+        [self.redoRecordArray addObject:lastRecord];
+        [self setNeedsDisplay];
+        [self.delegate editDrawViewDidChange:self];
+    }
+}
+
+- (void)redoLastRecord{
+    if (self.redoRecordArray.count > 0) {
+        AZLEditRecord *redoRecord = [self.redoRecordArray lastObject];
+        [self.redoRecordArray removeLastObject];
+        [self.editRecordArray addObject:redoRecord];
+        [self setNeedsDisplay];
+        [self.delegate editDrawViewDidChange:self];
+    }
+}
+
+- (NSArray<AZLEditRecord *> *)getEditRecords{
+    return self.editRecordArray.copy;
+}
+
+- (NSArray<AZLEditRecord *> *)getRedoRecords{
+    return self.redoRecordArray.copy;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -71,8 +113,10 @@
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     if (self.tmpEditRecord) {
         [self.editRecordArray addObject:self.tmpEditRecord];
+        [self.redoRecordArray removeAllObjects];
         self.tmpEditRecord = nil;
         [self setNeedsDisplay];
+        [self.delegate editDrawViewDidChange:self];
     }
 }
 
@@ -86,8 +130,10 @@
 - (void)pathProvider:(AZLPathProviderBase*)provider didEndPath:(UIBezierPath *)path{
     self.tmpEditRecord.path = path;
     [self.editRecordArray addObject:self.tmpEditRecord];
+    [self.redoRecordArray removeAllObjects];
     self.tmpEditRecord = nil;
     [self setNeedsDisplay];
+    [self.delegate editDrawViewDidChange:self];
 }
 
 - (void)drawRect:(CGRect)rect{
@@ -95,19 +141,12 @@
     
     CGRect nowBounds = self.bounds;
     for (AZLEditRecord *editRecord in self.editRecordArray) {
-        if (nowBounds.size.width != editRecord.bounds.size.width) {
-            CGFloat scale = nowBounds.size.width/editRecord.bounds.size.width;
-            [editRecord.path applyTransform:CGAffineTransformMakeScale(scale, scale)];
-            editRecord.path.lineWidth = editRecord.path.lineWidth*scale;
-            editRecord.bounds = nowBounds;
-        }
-        
-        [editRecord.color set];
-        [editRecord.path stroke];
+        [editRecord renderWithBounds:nowBounds];
     }
     
     if (self.tmpEditRecord) {
         [self.tmpEditRecord.color set];
+        [self.tmpEditRecord.path fill];
         [self.tmpEditRecord.path stroke];
     }
     

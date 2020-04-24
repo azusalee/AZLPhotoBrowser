@@ -217,7 +217,9 @@
     [cell.browserView.scrollView setZoomScale:1];
     [cell.browserView setImageWidth:model.width height:model.height];
     
-    if (model.image != nil) {
+    if (model.editImage != nil) {
+        cell.browserView.imageView.image = model.editImage;
+    }else if (model.image != nil) {
         cell.browserView.imageView.image = model.image;
     }else if (model.imageData != nil || model.asset != nil) {
         cell.browserView.imageView.image = model.placeholdImage;

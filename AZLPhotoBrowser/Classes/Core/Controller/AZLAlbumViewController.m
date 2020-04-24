@@ -171,8 +171,10 @@
     [self.view addSubview:self.bottomView];
     
     self.bottomDoneButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.bottomDoneButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-95, 12, 80, 40);
+    self.bottomDoneButton.layer.cornerRadius = 4;
     [self.bottomDoneButton setTitle:@"完成" forState:UIControlStateNormal];
+    [self.bottomDoneButton sizeToFit];
+    self.bottomDoneButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-self.bottomDoneButton.width-15-20, 16, self.bottomDoneButton.width+20, 32);
     [self.bottomDoneButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.enableTextColor forState:UIControlStateNormal];
     self.bottomDoneButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;
     [self.bottomDoneButton addTarget:self action:@selector(doneDidTap:) forControlEvents:UIControlEventTouchUpInside];
@@ -228,13 +230,21 @@
         NSArray *selectArray = self.selectPhotoArray.copy;
         __weak AZLAlbumViewController *weakSelf = self;
         for (AZLPhotoBrowserModel *selectModel in selectArray) {
-            [selectModel requestImageData:^(NSData * _Nullable imageData) {
+            if (selectModel.editImage != nil) {
                 processCount += 1;
                 if (selectCount == processCount) {
                     [weakSelf dismissViewControllerAnimated:YES completion:nil];
                     [weakSelf doneWithSelectArray:selectArray];
                 }
-            }];
+            }else{
+                [selectModel requestImageData:^(NSData * _Nullable imageData) {
+                    processCount += 1;
+                    if (selectCount == processCount) {
+                        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+                        [weakSelf doneWithSelectArray:selectArray];
+                    }
+                }];
+            }
         } 
     }
 }
@@ -244,10 +254,16 @@
         NSMutableArray *resultArray = [[NSMutableArray alloc] init];
         for (AZLPhotoBrowserModel *photoModel in selectArray) {
             AZLAlbumResult *result = [[AZLAlbumResult alloc] init];
-            result.width = photoModel.width;
-            result.height = photoModel.height;
-            result.isAnimate = photoModel.isAnimate;
-            result.imageData = photoModel.imageData;
+            if (photoModel.editImage) {
+                result.width = photoModel.editImage.size.width;
+                result.height = photoModel.editImage.size.height;
+                result.imageData = UIImageJPEGRepresentation(photoModel.editImage, 0.8);
+            }else{
+                result.width = photoModel.width;
+                result.height = photoModel.height;
+                result.isAnimate = photoModel.isAnimate;
+                result.imageData = photoModel.imageData;
+            }
             [resultArray addObject:result];
         }
         self.completeBlock(resultArray);
@@ -331,10 +347,14 @@
         cell.selectButton.layer.borderWidth = 1;
     }
     
-    __weak AZLAlbumAssetCollectionViewCell *weakCell = cell;
-    [[PHImageManager defaultManager] requestImageForAsset:photoModel.asset targetSize:CGSizeMake(self.cellWidth, self.cellWidth) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-        weakCell.imageView.image = result;
-    }];
+    if (photoModel.smallEditImage != nil) {
+        cell.imageView.image = photoModel.smallEditImage;
+    }else{
+        __weak AZLAlbumAssetCollectionViewCell *weakCell = cell;
+        [[PHImageManager defaultManager] requestImageForAsset:photoModel.asset targetSize:CGSizeMake(self.cellWidth, self.cellWidth) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            weakCell.imageView.image = result;
+        }];
+    }
     
     return cell;
 }
@@ -411,12 +431,16 @@
 - (void)albumAssetCollectionViewCell:(AZLAlbumAssetCollectionViewCell *)cell didSelectAtIndex:(NSInteger)index{
     AZLAlbumModel *albumModel = self.albumArray[self.selectAlbumIndex];
     AZLPhotoBrowserModel *photoModel = albumModel.photoModelArray[index];
+    NSMutableArray *indexPathArray = [[NSMutableArray alloc] init];
+    for (AZLPhotoBrowserModel *selectModel in self.selectPhotoArray) {
+        if ([albumModel.photoModelArray containsObject:selectModel]) {
+            NSUInteger tmpIndex = [albumModel.photoModelArray indexOfObject:selectModel];
+            [indexPathArray addObject:[NSIndexPath indexPathForRow:tmpIndex inSection:0]];
+        }
+    }
     if ([self.selectPhotoArray containsObject:photoModel]) {
         [self.selectPhotoArray removeObject:photoModel];
-        cell.selectButton.backgroundColor = [UIColor clearColor];
-        [cell.selectButton setTitle:@"" forState:UIControlStateNormal];
-        cell.selectButton.layer.borderColor = [UIColor whiteColor].CGColor;
-        cell.selectButton.layer.borderWidth = 1;
+        [self.photoCollectionView reloadItemsAtIndexPaths:indexPathArray];
     }else{
         if (self.selectPhotoArray.count == self.maxCount) {
             // 大於最大選擇數
@@ -430,12 +454,8 @@
             return;
         }
         [self.selectPhotoArray addObject:photoModel];
-        
-        NSUInteger selectIndex = self.selectPhotoArray.count;
-        cell.selectButton.backgroundColor = [UIColor greenColor];
-        [cell.selectButton setTitle:[NSString stringWithFormat:@"%ld", selectIndex] forState:UIControlStateNormal];
-        cell.selectButton.layer.borderColor = nil;
-        cell.selectButton.layer.borderWidth = 0;
+        [indexPathArray addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+        [self.photoCollectionView reloadItemsAtIndexPaths:indexPathArray];
     }
     [self updateDoneButton];
 }
