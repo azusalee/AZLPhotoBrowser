@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)clipWithFrame:(CGRect)frame;
 
+/// 應用新的bounds
+- (void)applyBounds:(CGRect)renderBounds;
 - (void)renderWithBounds:(CGRect)renderBounds;
 
 @end

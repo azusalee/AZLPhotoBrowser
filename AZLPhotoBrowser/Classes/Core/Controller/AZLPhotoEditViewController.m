@@ -206,7 +206,7 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     
     self.mosaicButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.mosaicButton.frame = CGRectMake(95, 38, 30, 30);
-    [self.mosaicButton setTitle:@"碼" forState:UIControlStateNormal];
+    [self.mosaicButton setTitle:@"馬" forState:UIControlStateNormal];
     [self.mosaicButton setTintColor:[UIColor whiteColor]];
     [self.mosaicButton addTarget:self action:@selector(mosaicDidTap:) forControlEvents:UIControlEventTouchUpInside];
     [self.editBottomView addSubview:self.mosaicButton];

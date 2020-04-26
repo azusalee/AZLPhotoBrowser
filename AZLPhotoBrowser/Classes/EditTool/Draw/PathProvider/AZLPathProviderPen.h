@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AZLPathProviderPen : AZLPathProviderBase
 
+@property (nonatomic, assign) CGFloat lineWeight;
+
 @end
 
 NS_ASSUME_NONNULL_END

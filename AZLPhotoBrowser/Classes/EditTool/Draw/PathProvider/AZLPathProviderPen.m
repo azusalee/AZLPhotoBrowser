@@ -244,7 +244,8 @@ typedef struct
 }
 
 - (void)setup{
-    self.lineWidth = 3;
+    self.lineWidth = 1;
+    self.lineWeight = 3;
 }
 
 - (void)touchBeganWithPoint:(CGPoint)point{
@@ -252,7 +253,7 @@ typedef struct
     self.tmpPath = [[UIBezierPath alloc] init];
     AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
     weightPoint.point = point;
-    weightPoint.weight = self.lineWidth;
+    weightPoint.weight = self.lineWeight;
     self.point0 = weightPoint;
     [self.tmpPath removeAllPoints];
     [self.tmpPath appendPath:self.path];
