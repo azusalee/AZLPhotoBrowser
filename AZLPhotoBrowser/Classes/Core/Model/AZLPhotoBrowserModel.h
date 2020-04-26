@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL isOrigin;
 /// 编辑记录
 @property (nonatomic, strong, nullable) NSArray<AZLEditRecord*> *editRecords;
+/// 馬賽克編輯記錄
+@property (nonatomic, strong, nullable) NSArray<AZLEditRecord*> *mosaicRecords;
 /// 编辑过的图片
 @property (nonatomic, strong, nullable) UIImage *editImage;
 /// 编辑过的图片的縮率圖

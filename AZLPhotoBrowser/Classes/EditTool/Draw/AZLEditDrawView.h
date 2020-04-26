@@ -14,7 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 @class AZLEditDrawView;
 @protocol AZLEditDrawViewDelegate <NSObject>
 
-- (void)editDrawViewDidChange:(AZLEditDrawView*)drawView;
+- (void)editDrawViewDidChangePath:(AZLEditDrawView*)drawView;
+
+- (void)editDrawViewDidBeginEditing:(AZLEditDrawView*)drawView;
 
 @end
 

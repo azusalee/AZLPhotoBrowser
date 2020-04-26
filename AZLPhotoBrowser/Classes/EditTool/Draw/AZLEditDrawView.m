@@ -58,7 +58,7 @@
         [self.editRecordArray removeLastObject];
         [self.redoRecordArray addObject:lastRecord];
         [self setNeedsDisplay];
-        [self.delegate editDrawViewDidChange:self];
+        [self.delegate editDrawViewDidChangePath:self];
     }
 }
 
@@ -68,8 +68,16 @@
         [self.redoRecordArray removeLastObject];
         [self.editRecordArray addObject:redoRecord];
         [self setNeedsDisplay];
-        [self.delegate editDrawViewDidChange:self];
+        [self.delegate editDrawViewDidChangePath:self];
     }
+}
+
+- (void)pathDidFinish{
+    [self.editRecordArray addObject:self.tmpEditRecord];
+    [self.redoRecordArray removeAllObjects];
+    self.tmpEditRecord = nil;
+    [self setNeedsDisplay];
+    [self.delegate editDrawViewDidChangePath:self];
 }
 
 - (NSArray<AZLEditRecord *> *)getEditRecords{
@@ -90,6 +98,7 @@
     //獲取觸點位置
     CGPoint point = [[touches anyObject] locationInView:self];
     [self.pathProvider touchBeganWithPoint:point];
+    [self.delegate editDrawViewDidBeginEditing:self];
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -112,11 +121,7 @@
 
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     if (self.tmpEditRecord) {
-        [self.editRecordArray addObject:self.tmpEditRecord];
-        [self.redoRecordArray removeAllObjects];
-        self.tmpEditRecord = nil;
-        [self setNeedsDisplay];
-        [self.delegate editDrawViewDidChange:self];
+        [self pathDidFinish];
     }
 }
 
@@ -129,11 +134,7 @@
 //画完一条path时回调(抬手时回调)
 - (void)pathProvider:(AZLPathProviderBase*)provider didEndPath:(UIBezierPath *)path{
     self.tmpEditRecord.path = path;
-    [self.editRecordArray addObject:self.tmpEditRecord];
-    [self.redoRecordArray removeAllObjects];
-    self.tmpEditRecord = nil;
-    [self setNeedsDisplay];
-    [self.delegate editDrawViewDidChange:self];
+    [self pathDidFinish];
 }
 
 - (void)drawRect:(CGRect)rect{
@@ -145,9 +146,7 @@
     }
     
     if (self.tmpEditRecord) {
-        [self.tmpEditRecord.color set];
-        [self.tmpEditRecord.path fill];
-        [self.tmpEditRecord.path stroke];
+        [self.tmpEditRecord renderWithBounds:nowBounds];
     }
     
 }
