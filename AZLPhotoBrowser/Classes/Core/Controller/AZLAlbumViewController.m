@@ -216,7 +216,8 @@
     self.albumTableView.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.backgroundColor;
     [self.albumTableView registerClass:[AZLAlbumTableViewCell class] forCellReuseIdentifier:@"AZLAlbumTableViewCell"];
     [self.view addSubview:self.albumTableView];
-    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:self.albumArray[self.selectAlbumIndex].photoModelArray.count-1 inSection:0];
+    [self.photoCollectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
 }
 
 - (void)leftBarItemDidTap:(id)sender{

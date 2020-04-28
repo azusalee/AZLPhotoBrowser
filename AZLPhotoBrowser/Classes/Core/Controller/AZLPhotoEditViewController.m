@@ -75,6 +75,7 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor blackColor];
     
     self.browserView = [[AZLPhotoBrowserView alloc] initWithFrame:self.view.bounds];
     self.browserView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -116,7 +117,9 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     [self.view addSubview:self.editTopView];
     
     UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    cancelButton.frame = CGRectMake(5, self.editTopView.bounds.size.height-navBarHeight, 44, navBarHeight);
+    cancelButton.frame = CGRectMake(5, self.editTopView.bounds.size.height-navBarHeight+2, 40, 40);
+    cancelButton.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    cancelButton.layer.cornerRadius = 20;
     cancelButton.tintColor = [UIColor whiteColor];
     [cancelButton setImage:[AZLPhotoBrowserManager sharedInstance].theme.backImage forState:UIControlStateNormal];
     cancelButton.titleLabel.font = [UIFont systemFontOfSize:15];
@@ -126,9 +129,10 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     
     //底部
     self.editBottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-80, [UIScreen mainScreen].bounds.size.width, 80)];
-    self.editBottomView.backgroundColor = [UIColor clearColor];
+    self.editBottomView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     [self.view addSubview:self.editBottomView];
     
+    self.isShowingEditUI = YES;
 }
 
 - (void)showEditUI{
@@ -215,6 +219,9 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
 - (void)leftBarItemDidTap:(id)sender {
     [self generateEditImage];
     [self dismissViewControllerAnimated:NO completion:nil];
+    if (self.block) {
+        self.block(self.photoModel);
+    }
 }
 
 - (void)undoDidTap:(UIButton*)button {

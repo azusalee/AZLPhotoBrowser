@@ -133,6 +133,75 @@
     
 }
 
+// 圖片編輯測試
+- (void)testEdit{
+    XCUIApplication *app = [[XCUIApplication alloc] init];
+    [app launch];
+    XCUIElement *element = [[[[app childrenMatchingType:XCUIElementTypeWindow] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeOther].element childrenMatchingType:XCUIElementTypeOther].element;
+    [[[[element childrenMatchingType:XCUIElementTypeOther].element childrenMatchingType:XCUIElementTypeImage] elementBoundByIndex:5] tap];
+//    sleep(2);
+    XCUIElement *image = [app.scrollViews childrenMatchingType:XCUIElementTypeImage].element;
+    [image tap];
+    sleep(2);
+    [image tap];
+    sleep(2);
+    [app.buttons[@"\u925b"] tap];
+    
+    XCUIElement *colorPickerElement = [[[[element childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:2] childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:0];
+    [[colorPickerElement childrenMatchingType:XCUIElementTypeOther].element swipeRight];
+    [colorPickerElement tap];
+    
+    [app.buttons[@"\u925b"] tap];
+    [app.buttons[@"\u925b"] tap];
+    
+    XCUIElement *element2 = [[image childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:1];
+    [element2 swipeDown];
+    [app.buttons[@"\u92fc"] tap];
+    [app.buttons[@"\u92fc"] tap];
+    [app.buttons[@"\u92fc"] tap];
+    [element2 swipeDown];
+    
+    XCUIElement *element4 = [[element childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:2];
+    XCUIElement *button = [[element4 childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:0];
+    [button tap];
+    [button tap];
+    
+    XCUIElement *button2 = [[element4 childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:1];
+    [button2 tap];
+    [button2 tap];
+    
+    XCUIElement *button3 = app.buttons[@"\u99ac"];
+    [button3 tap];
+    
+    XCUIElement *element3 = [[image childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:0];
+    [element3 swipeRight];
+    [element3 swipeDown];
+    [button tap];
+    [button2 tap];
+    [button3 tap];
+    [[[[element childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeButton].element tap];
+    [[[[element childrenMatchingType:XCUIElementTypeOther].element childrenMatchingType:XCUIElementTypeImage] elementBoundByIndex:5] tap];
+    sleep(2);
+    
+    [app.buttons[@"\u925b"] tap];
+    XCUIElement *bottomElement = [[[[app childrenMatchingType:XCUIElementTypeWindow] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeOther].element childrenMatchingType:XCUIElementTypeOther].element;
+    XCUIElement *undoButton = [[[[bottomElement childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:2] childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:0];
+    [undoButton tap];
+    [undoButton tap];
+    [undoButton tap];
+    [undoButton tap];
+    [undoButton tap];
+    [undoButton tap];
+    [undoButton tap];
+    [app.buttons[@"\u99ac"] tap];
+    [undoButton tap];
+    [undoButton tap];
+    [undoButton tap];
+    [undoButton tap];
+    [[[[bottomElement childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeButton].element tap];
+    sleep(2);
+}
+
 //- (void)testLaunchPerformance {
 //    if (@available(macOS 10.15, iOS 13.0, tvOS 13.0, *)) {
 //        // This measures how long it takes to launch your application.

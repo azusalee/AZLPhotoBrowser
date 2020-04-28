@@ -12,11 +12,15 @@
 #import <AZLExtend/AZLExtend.h>
 #import <Photos/Photos.h>
 #import <AZLPhotoBrowser/AZLAlbumViewController.h>
+#import <AZLPhotoBrowser/AZLPhotoEditViewController.h>
 
 @interface AZLViewController ()
 
-@property (nonnull, strong) NSMutableArray<UIImageView*> *imageViews;
-@property (nonnull, strong) NSMutableArray<AZLPhotoBrowserModel*> *models;
+@property (nonatomic, strong) NSMutableArray<UIImageView*> *imageViews;
+@property (nonatomic, strong) NSMutableArray<AZLPhotoBrowserModel*> *models;
+
+@property (nonatomic, strong) AZLPhotoBrowserModel *editModel;
+@property (nonatomic, strong) UIImageView *editImageView;
 
 @end
 
@@ -76,7 +80,42 @@
     }
     self.models = models;
     
+    {
+        NSDictionary *dict = @{@"url":@"", @"w":@(600), @"h":@(901), @"imageName":@"image2"};
+        
+        AZLPhotoBrowserModel *model = [[AZLPhotoBrowserModel alloc] init];
+        model.originUrlString = dict[@"url"];
+        if (dict[@"imageName"]) {
+            model.image = [UIImage imageNamed:dict[@"imageName"]];
+        }
+        model.width = [dict[@"w"] doubleValue];
+        model.height = [dict[@"h"] doubleValue];
+        [models addObject:model];
+        
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(x, y+90, imageWidth, imageWidth*model.height/model.width)];
+        imageView.userInteractionEnabled = YES;
+        imageView.tag = index;
+        [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(editImageDidTap:)]];
+        if (model.image) {
+            imageView.image = model.image;
+        }else{
+            [imageView sd_setImageWithURL:[NSURL URLWithString:model.originUrlString]];
+        }
+        [self.view addSubview:imageView];
+        
+        model.fromRect = [self.view convertRect:imageView.frame toView:[UIApplication sharedApplication].keyWindow];
+        
+        self.editModel = model;
+        self.editImageView = imageView;
+    }
+    
+    
     //[self setup];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
 }
 
 - (void)imageDidTap:(UITapGestureRecognizer *)gesture {
@@ -84,6 +123,23 @@
         [self.models[gesture.view.tag] setPlaceholdImage:[self.imageViews[gesture.view.tag] image]];
         AZLPhotoBrowserViewController *controller = [[AZLPhotoBrowserViewController alloc] init];
         [controller showWithPhotoModels:self.models index:gesture.view.tag];
+    }
+}
+
+- (void)editImageDidTap:(UITapGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        AZLPhotoEditViewController *controller = [[AZLPhotoEditViewController alloc] init];
+        controller.photoModel = self.editModel;
+        controller.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:controller animated:YES completion:nil];
+        __weak typeof(self) weakself = self;
+        [controller setBlock:^(AZLPhotoBrowserModel *photoModel) {
+            if (photoModel.editImage) {
+                weakself.editImageView.image = photoModel.editImage;
+            }else{
+                weakself.editImageView.image = photoModel.image;
+            }
+        }];
     }
 }
 
