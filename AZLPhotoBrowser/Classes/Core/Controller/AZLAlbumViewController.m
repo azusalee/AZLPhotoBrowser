@@ -353,7 +353,7 @@
     if ([self.selectPhotoArray containsObject:photoModel]) {
         NSUInteger selectIndex = [self.selectPhotoArray indexOfObject:photoModel]+1;
         cell.selectButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;
-        [cell.selectButton setTitle:[NSString stringWithFormat:@"%ld", selectIndex] forState:UIControlStateNormal];
+        [cell.selectButton setTitle:[NSString stringWithFormat:@"%ld", (long)selectIndex] forState:UIControlStateNormal];
         cell.selectButton.layer.borderColor = nil;
         cell.selectButton.layer.borderWidth = 0;
     }else{
@@ -424,7 +424,7 @@
     AZLAlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AZLAlbumTableViewCell"];
     AZLAlbumModel *albumModel = self.albumArray[indexPath.row];
     
-    cell.titleLabel.text = [NSString stringWithFormat:@"%@ (%ld)", albumModel.title, albumModel.photoModelArray.count];
+    cell.titleLabel.text = [NSString stringWithFormat:@"%@ (%ld)", albumModel.title, (long)albumModel.photoModelArray.count];
     if (albumModel.photoModelArray.count > 0) {
         AZLPhotoBrowserModel *photoModel = [albumModel.photoModelArray lastObject];
         __weak AZLAlbumTableViewCell *weakCell = cell;
@@ -460,7 +460,7 @@
     }else{
         if (self.selectPhotoArray.count == self.maxCount) {
             // 大於最大選擇數
-            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"你最多只能选择%ld张照片", self.maxCount] preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"你最多只能选择%ld张照片", (long)self.maxCount] preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             
             }];

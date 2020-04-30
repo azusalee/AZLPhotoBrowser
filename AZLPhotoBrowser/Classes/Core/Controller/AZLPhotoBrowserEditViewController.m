@@ -145,7 +145,7 @@
     if ([self.selectArray containsObject:model]) {
         NSUInteger selectIndex = [self.selectArray indexOfObject:model]+1;
         self.selectButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;
-        [self.selectButton setTitle:[NSString stringWithFormat:@"%ld", selectIndex] forState:UIControlStateNormal];
+        [self.selectButton setTitle:[NSString stringWithFormat:@"%ld", (long)selectIndex] forState:UIControlStateNormal];
         self.selectButton.layer.borderColor = nil;
         self.selectButton.layer.borderWidth = 0;
     }else{

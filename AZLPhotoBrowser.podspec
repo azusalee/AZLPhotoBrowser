@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'AZLPhotoBrowser'
-  s.version          = '0.5.0'
+  s.version          = '0.5.2'
   s.summary          = '简单的图片浏览控件'
 
 # This description is used to generate tags and improve search results.
@@ -45,6 +45,7 @@ TODO: Add long description of the pod here.
     core.source_files = 'AZLPhotoBrowser/Classes/Core/**/*'
     core.dependency 'SDWebImage'
     core.dependency 'AZLExtend'
+    core.dependency 'AZLPhotoBrowser/EditTool'
   end
   
   s.subspec 'EditTool' do |core|
