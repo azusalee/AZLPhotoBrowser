@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AZLEditCropView : UIView
 
+
 @end
 
 NS_ASSUME_NONNULL_END

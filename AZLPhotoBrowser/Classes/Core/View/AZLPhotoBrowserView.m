@@ -53,6 +53,7 @@
     self.imageView = [[UIImageView alloc] initWithFrame:self.scrollView.bounds];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.imageView.userInteractionEnabled = YES;
     [self.scrollView addSubview:self.imageView];
     [self addSubview:self.scrollView];
     
@@ -65,7 +66,6 @@
     [self addGestureRecognizer:singleTapGes];
     
     self.scrollView.pinchGestureRecognizer.enabled = NO;
-    self.imageView.userInteractionEnabled = YES;
     UIPinchGestureRecognizer *pinchGes = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(imagePinch:)];
     pinchGes.delegate = self;
     [self.imageView addGestureRecognizer:pinchGes];

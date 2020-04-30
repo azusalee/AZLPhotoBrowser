@@ -152,6 +152,18 @@
     [self.delegate editDrawViewDidChangePath:self];
 }
 
+- (void)undoCropRecord:(AZLCropRecord *)cropRecord{
+    for (AZLEditRecord *record in self.editRecordArray) {
+        [record undoCropRecord:cropRecord];
+    }
+}
+
+- (void)redoCropRecord:(AZLCropRecord *)cropRecord{
+    for (AZLEditRecord *record in self.editRecordArray) {
+        [record redoCropRecord:cropRecord];
+    }
+}
+
 - (NSArray<AZLEditRecord *> *)getEditRecords{
     return self.editRecordArray.copy;
 }
@@ -182,9 +194,7 @@
     if (touches.count != 1) {
         return;
     }
-    if (self.tmpEditRecord.path == nil) {
-        [self.delegate editDrawViewDidBeginEditing:self];
-    }
+    [self.delegate editDrawViewEditingPath:self];
     
     //獲取觸點位置
     CGPoint point = [[touches anyObject] locationInView:self];

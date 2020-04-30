@@ -90,7 +90,6 @@
         }
         model.width = [dict[@"w"] doubleValue];
         model.height = [dict[@"h"] doubleValue];
-        [models addObject:model];
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(x, y+90, imageWidth, imageWidth*model.height/model.width)];
         imageView.userInteractionEnabled = YES;

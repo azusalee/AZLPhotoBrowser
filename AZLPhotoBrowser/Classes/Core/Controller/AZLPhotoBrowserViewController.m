@@ -214,7 +214,7 @@
     cell.delegate = self;
     AZLPhotoBrowserModel *model = self.dataArray[indexPath.row];
     cell.originUrl = model.originUrlString;
-    [cell.browserView.scrollView setZoomScale:1];
+    //[cell.browserView.scrollView setZoomScale:1];
     [cell.browserView setImageWidth:model.width height:model.height];
     
     if (model.editImage != nil) {

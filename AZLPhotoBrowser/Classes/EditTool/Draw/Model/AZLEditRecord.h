@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AZLCropRecord.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,11 +17,15 @@ NS_ASSUME_NONNULL_BEGIN
 // 画的时候的画布大小
 @property (nonatomic, assign) CGRect bounds;
 
-- (void)clipWithFrame:(CGRect)frame;
+
+- (void)undoCropRecord:(AZLCropRecord*)cropRecord;
+- (void)redoCropRecord:(AZLCropRecord*)cropRecord;
 
 /// 應用新的bounds
 - (void)applyBounds:(CGRect)renderBounds;
 - (void)renderWithBounds:(CGRect)renderBounds;
+
+
 
 @end
 

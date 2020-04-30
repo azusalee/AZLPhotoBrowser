@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)editDrawViewDidChangePath:(AZLEditDrawView*)drawView;
 
-- (void)editDrawViewDidBeginEditing:(AZLEditDrawView*)drawView;
+- (void)editDrawViewEditingPath:(AZLEditDrawView*)drawView;
 
 @end
 
@@ -41,6 +41,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray<AZLEditRecord*>*)getEditRecords;
 /// 獲取可重做的編輯記錄
 - (NSArray<AZLEditRecord*>*)getRedoRecords;
+
+- (void)undoCropRecord:(AZLCropRecord*)cropRecord;
+- (void)redoCropRecord:(AZLCropRecord*)cropRecord;
 
 @end
 

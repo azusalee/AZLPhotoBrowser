@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class PHAsset, AZLEditRecord;
+@class PHAsset, AZLEditRecord, AZLCropRecord;
 @interface AZLPhotoBrowserModel : NSObject
 
 /// 圖片寬(按dp算)，如果不設置，可能顯示上有問題
@@ -42,6 +42,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSArray<AZLEditRecord*> *editRecords;
 /// 馬賽克編輯記錄
 @property (nonatomic, strong, nullable) NSArray<AZLEditRecord*> *mosaicRecords;
+/// 裁剪記錄
+@property (nonatomic, strong, nullable) NSArray<AZLCropRecord*> *cropRecords;
 /// 编辑过的图片
 @property (nonatomic, strong, nullable) UIImage *editImage;
 /// 编辑过的图片的縮率圖
