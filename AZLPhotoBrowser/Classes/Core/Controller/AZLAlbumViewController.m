@@ -18,12 +18,15 @@
 
 @property (nonatomic, strong) NSMutableArray<AZLAlbumModel*> *albumArray;
 @property (nonatomic, strong) NSMutableArray<AZLPhotoBrowserModel*> *selectPhotoArray;
+
 @property (nonatomic, strong) UICollectionView *photoCollectionView;
+/// 当前选择的相册索引
 @property (nonatomic, assign) NSInteger selectAlbumIndex;
 
 @property (nonatomic, assign) CGFloat cellWidth;
-@property (nonatomic, strong) UIView *customNavView;
 
+@property (nonatomic, strong) UIView *customNavView;
+/// 相册列表
 @property (nonatomic, strong) UITableView *albumTableView;
 
 @property (nonatomic, strong) UIView *titleView;
@@ -74,16 +77,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    if (self.colCount == 0) {
-        self.colCount = 4;
+    if (self.colCount <= 0) {
+        _colCount = 4;
     }
-    if (self.maxCount == 0) {
-        self.maxCount = 9;
+    if (self.maxCount <= 0) {
+        _maxCount = 9;
     }
     [self setup];
     [self setupUI];
     [self setupNavView];
     [self setupBottomView];
+}
+
+- (void)setColCount:(NSInteger)colCount{
+    if (colCount > 0) {
+        _colCount = colCount;
+    }
+}
+
+- (void)setMaxCount:(NSInteger)maxCount{
+    if (maxCount > 0) {
+        _maxCount = maxCount;
+    }
 }
 
 - (void)setup{
@@ -113,7 +128,7 @@
     
     if (@available(iOS 11, *)) {
         AZLAlbumModel *animateAlbumModel = [[AZLAlbumModel alloc] init];
-        animateAlbumModel.title = @"動圖";
+        animateAlbumModel.title = @"动图";
         // 動圖
         PHFetchResult<PHAssetCollection *> *animateResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumAnimated options:nil];
         for (PHAssetCollection *collection in animateResult) {
@@ -445,7 +460,7 @@
     }else{
         if (self.selectPhotoArray.count == self.maxCount) {
             // 大於最大選擇數
-            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"你最多只能選擇%ld張照片", self.maxCount] preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"你最多只能选择%ld张照片", self.maxCount] preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             
             }];

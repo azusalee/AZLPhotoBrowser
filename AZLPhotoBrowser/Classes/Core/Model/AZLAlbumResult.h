@@ -9,6 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// 相册挑选完后返回的结果
 @interface AZLAlbumResult : NSObject
 
 /// 圖片寬(按dp算)

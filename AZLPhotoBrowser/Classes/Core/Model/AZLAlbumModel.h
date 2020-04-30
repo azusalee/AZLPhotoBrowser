@@ -14,8 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 標題
 @property (nonatomic, strong) NSString *title;
+/// 图片模型数组
 @property (nonatomic, readonly) NSArray<AZLPhotoBrowserModel*> *photoModelArray;
 
+/// 增加图片模型
 - (void)addPhotoModel:(AZLPhotoBrowserModel*)photoModel;
 
 @end

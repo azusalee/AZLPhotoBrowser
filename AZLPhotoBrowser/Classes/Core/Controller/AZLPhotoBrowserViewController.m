@@ -11,7 +11,7 @@
 #import <SDWebImage/SDWebImage.h>
 #import <AZLExtend/AZLExtend.h>
 
-
+/// 自定义过场动画
 @interface AZLPhotoBrowserTransition : NSObject<UIViewControllerAnimatedTransitioning>
 
 @property (nonatomic, assign) BOOL isPresent;
@@ -125,13 +125,18 @@
 
 @interface AZLPhotoBrowserViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerTransitioningDelegate, AZLPhotoBrowserCollectionViewCellDelegate>
 
-
 @property (nonatomic, strong) NSMutableArray<AZLPhotoBrowserModel*> *dataArray;
 
 @end
 
 @implementation AZLPhotoBrowserViewController
 
++ (void)showWithPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray index:(NSInteger)index{
+    AZLPhotoBrowserViewController *controller = [[AZLPhotoBrowserViewController alloc] init];
+    controller.showingIndex = index;
+    [controller addPhotoModels:photoArray];
+    [controller azl_presentSelf];
+}
 
 - (instancetype)init{
     if (self = [super init]) {
@@ -148,14 +153,7 @@
 
 - (void)addPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray{
     [self.dataArray addObjectsFromArray:photoArray];
-}
-
-- (void)showWithPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray index:(NSInteger)index{
-    [self.dataArray removeAllObjects];
-    [self.dataArray addObjectsFromArray:photoArray];
-    self.showingIndex = index;
-    
-    [self azl_presentSelf];
+    [self.photoCollectionView reloadData];
 }
 
 - (void)viewDidLoad {
@@ -183,7 +181,6 @@
     [self.photoCollectionView registerClass:[AZLPhotoBrowserCollectionViewCell class] forCellWithReuseIdentifier:@"AZLPhotoBrowserCollectionViewCell"];
     [self.view addSubview:self.photoCollectionView];
     [self.photoCollectionView setContentOffset:CGPointMake([UIScreen mainScreen].bounds.size.width*self.showingIndex, 0)];
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -194,11 +191,16 @@
     
 }
 
+- (void)setShowingIndex:(NSInteger)showingIndex{
+    _showingIndex = showingIndex;
+    [self.photoCollectionView setContentOffset:CGPointMake([UIScreen mainScreen].bounds.size.width*_showingIndex, 0)];
+}
+
 #pragma mark - Delegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     NSInteger showingIndex = (scrollView.contentOffset.x/self.view.bounds.size.width)+0.5;
     if (self.showingIndex != showingIndex) {
-        self.showingIndex = showingIndex;
+        _showingIndex = showingIndex;
         [self showingIndexDidChange];
     }
 }

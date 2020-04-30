@@ -35,9 +35,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// UIImage對象
 @property (nonatomic, strong, nullable) UIImage *image;
 
-
 /// 是否原圖
 @property (nonatomic, assign) BOOL isOrigin;
+
 /// 编辑记录
 @property (nonatomic, strong, nullable) NSArray<AZLEditRecord*> *editRecords;
 /// 馬賽克編輯記錄

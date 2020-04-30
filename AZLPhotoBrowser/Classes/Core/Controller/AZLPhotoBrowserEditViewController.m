@@ -81,7 +81,7 @@
     
     self.editButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.editButton.titleLabel.font = [UIFont systemFontOfSize:17];
-    [self.editButton setTitle:@"編輯" forState:UIControlStateNormal];
+    [self.editButton setTitle:@"编辑" forState:UIControlStateNormal];
     [self.editButton sizeToFit];
     self.editButton.frame = CGRectMake(15, 12, self.editButton.bounds.size.width, 40);
     

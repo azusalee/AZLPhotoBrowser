@@ -270,21 +270,21 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     
     self.pencilButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.pencilButton.frame = CGRectMake(15, 38, 30, 30);
-    [self.pencilButton setTitle:@"鉛" forState:UIControlStateNormal];
+    [self.pencilButton setTitle:@"铅" forState:UIControlStateNormal];
     [self.pencilButton setTintColor:[UIColor whiteColor]];
     [self.pencilButton addTarget:self action:@selector(pencilDidTap:) forControlEvents:UIControlEventTouchUpInside];
     [self.editBottomView addSubview:self.pencilButton];
     
     self.penButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.penButton.frame = CGRectMake(55, 38, 30, 30);
-    [self.penButton setTitle:@"鋼" forState:UIControlStateNormal];
+    [self.penButton setTitle:@"钢" forState:UIControlStateNormal];
     [self.penButton setTintColor:[UIColor whiteColor]];
     [self.penButton addTarget:self action:@selector(penDidTap:) forControlEvents:UIControlEventTouchUpInside];
     [self.editBottomView addSubview:self.penButton];
     
     self.mosaicButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.mosaicButton.frame = CGRectMake(95, 38, 30, 30);
-    [self.mosaicButton setTitle:@"馬" forState:UIControlStateNormal];
+    [self.mosaicButton setTitle:@"马" forState:UIControlStateNormal];
     [self.mosaicButton setTintColor:[UIColor whiteColor]];
     [self.mosaicButton addTarget:self action:@selector(mosaicDidTap:) forControlEvents:UIControlEventTouchUpInside];
     [self.editBottomView addSubview:self.mosaicButton];

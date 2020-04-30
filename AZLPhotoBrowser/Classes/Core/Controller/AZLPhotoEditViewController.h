@@ -16,7 +16,7 @@ typedef void(^AZLPhotoEditCompleteBlock)(AZLPhotoBrowserModel *photoModel);
 
 /// 需要处理的对象（注意：内部逻辑会直接处理传入的该对象）
 @property (nonatomic, strong) AZLPhotoBrowserModel *photoModel;
-
+/// 編輯完成後回調
 @property (nonatomic, copy) AZLPhotoEditCompleteBlock block;
 
 @end

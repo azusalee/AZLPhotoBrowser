@@ -13,6 +13,7 @@ typedef void(^AZLColorPickViewBlock)(UIColor *color);
 
 @interface AZLColorPickView : UIView
 
+/// 颜色选择回调
 @property (nonatomic, copy) AZLColorPickViewBlock block;
 
 @end

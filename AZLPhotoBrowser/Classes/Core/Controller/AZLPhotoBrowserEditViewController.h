@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef void(^AZLPhotoBrowserEditCompleteBlock)(NSArray<AZLPhotoBrowserModel*> *selectModels);
 
+/// 图片浏览选择编辑页
 @interface AZLPhotoBrowserEditViewController : AZLPhotoBrowserViewController
 
 @property (nonatomic, copy) AZLPhotoBrowserEditCompleteBlock completeBlock;

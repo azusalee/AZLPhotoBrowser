@@ -120,8 +120,7 @@
 - (void)imageDidTap:(UITapGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateEnded) {
         [self.models[gesture.view.tag] setPlaceholdImage:[self.imageViews[gesture.view.tag] image]];
-        AZLPhotoBrowserViewController *controller = [[AZLPhotoBrowserViewController alloc] init];
-        [controller showWithPhotoModels:self.models index:gesture.view.tag];
+        [AZLPhotoBrowserViewController showWithPhotoModels:self.models index:gesture.view.tag];
     }
 }
 
