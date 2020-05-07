@@ -81,7 +81,6 @@
         imageView.clipsToBounds = YES;
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         imageView.image = cell.browserView.imageView.image;
-        controller.view.alpha = 0;
         controller.photoCollectionView.hidden = YES;
         CGRect toRect = rect;
         

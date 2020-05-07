@@ -22,7 +22,7 @@ pod 'AZLPhotoBrowser'
 
 ## Author
 
-azusalee, lizihong@km-it.cn
+azusalee, 384433472@qq.com
 
 ## License
 
