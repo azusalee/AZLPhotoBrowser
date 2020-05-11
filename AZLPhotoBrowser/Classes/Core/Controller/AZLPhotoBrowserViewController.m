@@ -221,6 +221,7 @@
     if (model.editImage != nil) {
         cell.browserView.imageView.image = model.editImage;
     }else if (model.image != nil) {
+        cell.browserView.imageView.image = nil;
         cell.browserView.imageView.image = model.image;
     }else if (model.imageData != nil || model.asset != nil) {
         cell.browserView.imageView.image = model.placeholdImage;

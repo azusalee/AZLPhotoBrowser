@@ -38,10 +38,14 @@
     [self updateCurrentPhotoUI];
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.photoCollectionView reloadData];
+}
+
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self showEditUI];
-    [self.photoCollectionView reloadData];
 }
 
 - (void)addSelectPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray{
