@@ -34,6 +34,7 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
 
 @property (nonatomic, strong) UIView *editTopView;
 @property (nonatomic, strong) UIView *editBottomView;
+@property (nonatomic, strong) CALayer *editBottomGradientLayer;
 @property (nonatomic, assign) BOOL isShowingEditUI;
 
 /// 修改圖層view
@@ -113,6 +114,12 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     [self setupDrawUI];
 }
 
+- (void)viewSafeAreaInsetsDidChange{
+    [super viewSafeAreaInsetsDidChange];
+    self.editBottomView.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height-80-self.view.safeAreaInsets.bottom, [UIScreen mainScreen].bounds.size.width, 80+self.view.safeAreaInsets.bottom);
+    self.editBottomGradientLayer.frame = self.editBottomView.bounds;
+}
+
 - (void)setupBrowserUI{
     self.browserView = [[AZLPhotoBrowserView alloc] initWithFrame:self.view.bounds];
     self.browserView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -186,7 +193,7 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     gradientLayer.endPoint = CGPointMake(0, 1); // 
     [self.editBottomView.layer addSublayer:gradientLayer];
     [self.view addSubview:self.editBottomView];
-    
+    self.editBottomGradientLayer = gradientLayer;
     self.isShowingEditUI = YES;
 }
 

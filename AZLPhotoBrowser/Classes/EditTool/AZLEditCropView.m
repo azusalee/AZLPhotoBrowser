@@ -117,13 +117,19 @@ typedef NS_ENUM(NSUInteger, AZLEditCropViewPanType) {
         self.paningType = AZLEditCropViewPanTypeRightBottom;
     }else if (point.x < 50 && point.y > self.bounds.size.height-50) {
         self.paningType = AZLEditCropViewPanTypeLeftBottom;
-    }else if (point.x < 50 || point.x > self.bounds.size.width-50 || point.y < 50 || point.y > self.bounds.size.height-50) {
+    }
+//    else if (point.x < 50 || point.x > self.bounds.size.width-50 || point.y < 50 || point.y > self.bounds.size.height-50) {
+//        self.paningType = AZLEditCropViewPanTypeEdge;
+//        self.transStartFrame = self.frame;
+//    }
+    else{
         self.paningType = AZLEditCropViewPanTypeEdge;
         self.transStartFrame = self.frame;
-    }else{
-        self.paningType = AZLEditCropViewPanTypeNone;
-        return NO;
     }
+//    else{
+//        self.paningType = AZLEditCropViewPanTypeNone;
+//        return NO;
+//    }
     return YES;
 }
 
@@ -131,15 +137,15 @@ typedef NS_ENUM(NSUInteger, AZLEditCropViewPanType) {
     return NO;
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
-    if (self.isHidden == YES || self.userInteractionEnabled == NO) {
-        return nil;
-    }
-    if (point.x < 50 || point.x > self.bounds.size.width-50 || point.y < 50 || point.y > self.bounds.size.height-50) {
-        return [super hitTest:point withEvent:event];
-    }
-    return nil;
-}
+//- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
+//    if (self.isHidden == YES || self.userInteractionEnabled == NO) {
+//        return nil;
+//    }
+//    if (point.x < 50 || point.x > self.bounds.size.width-50 || point.y < 50 || point.y > self.bounds.size.height-50) {
+//        return [super hitTest:point withEvent:event];
+//    }
+//    return nil;
+//}
 
 /*
 // Only override drawRect: if you perform custom drawing.

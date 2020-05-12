@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AZLPathProviderPen : AZLPathProviderBase
 
-@property (nonatomic, assign) CGFloat lineWeight;
+//設置lineWidth，並不會改變實際的linewidth值
 
 @end
 

@@ -83,10 +83,12 @@
     if (self.maxCount <= 0) {
         _maxCount = 9;
     }
+    
     [self setup];
     [self setupUI];
     [self setupNavView];
     [self setupBottomView];
+    
 }
 
 - (void)setColCount:(NSInteger)colCount{
@@ -178,6 +180,15 @@
     
     [self.customNavView addSubview:self.titleView];
     [self updateTitle];
+}
+
+-(void)viewSafeAreaInsetsDidChange{
+    [super viewSafeAreaInsetsDidChange];
+    self.bottomView.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height-64-self.view.safeAreaInsets.bottom, [UIScreen mainScreen].bounds.size.width, 64+self.view.safeAreaInsets.bottom);
+    
+    CGFloat navViewHeight = 44+[UIApplication sharedApplication].statusBarFrame.size.height;
+    self.photoCollectionView.frame = CGRectMake(0, navViewHeight, self.view.bounds.size.width, self.view.bounds.size.height-navViewHeight-self.bottomView.frame.size.height);
+    self.albumTableView.frame = CGRectMake(0, navViewHeight, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-navViewHeight-self.bottomView.frame.size.height);
 }
 
 - (void)setupBottomView{

@@ -230,6 +230,7 @@ typedef struct
 @property (nonatomic, strong) AZLWeightPoint *point3;
 
 @property (nonatomic, assign) NSInteger nextPointIndex;
+@property (nonatomic, assign) CGFloat lineWeight;
 
 @end
 
@@ -244,8 +245,12 @@ typedef struct
 }
 
 - (void)setup{
-    self.lineWidth = 1;
-    self.lineWeight = 3;
+    [self setLineWidth:3];
+}
+
+- (void)setLineWidth:(CGFloat)lineWidth{
+    [super setLineWidth:1];
+    self.lineWeight = lineWidth;
 }
 
 - (void)touchBeganWithPoint:(CGPoint)point{
@@ -270,13 +275,10 @@ typedef struct
     AZLWeightPoint *previousPoint;
     if (self.nextPointIndex == 1) {
         previousPoint = self.point0;
-        
     }else if (self.nextPointIndex == 2){
         previousPoint = self.point1;
-        
     }else if (self.nextPointIndex == 3){
         previousPoint = self.point2;
-        
     }else if (self.nextPointIndex == 4){
         previousPoint = self.point3;
     }
@@ -289,7 +291,6 @@ typedef struct
     //分開4中情況，1，2，3，4個點的時候分別處理
     //只有四個點的時候為完整的，添加到path；其他的情況都為臨時線，添加到tmpPath
     if (self.nextPointIndex == 1){
-        
         AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
         weightPoint.point = point;
         weightPoint.weight = [AZLWeightPoint weightWithPointA:self.point0.point pointB:point];
@@ -313,7 +314,6 @@ typedef struct
         self.nextPointIndex = 3;
         
     }else if (self.nextPointIndex == 3) {
-        
         AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
         weightPoint.point = point;
         weightPoint.weight = [AZLWeightPoint weightWithPointA:self.point2.point pointB:point];
@@ -358,6 +358,5 @@ typedef struct
     self.nextPointIndex = 0;
     [self.delegate pathProvider:self didEndPath:self.path];
 }
-
 
 @end

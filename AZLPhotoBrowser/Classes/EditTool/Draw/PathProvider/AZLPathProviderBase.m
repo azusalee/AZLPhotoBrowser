@@ -9,6 +9,13 @@
 
 @implementation AZLPathProviderBase
 
+- (instancetype)init{
+    if (self = [super init]) {
+        _lineWidth = 1;
+    }
+    return self;
+}
+
 - (void)touchBeganWithPoint:(CGPoint)point{
     
 }

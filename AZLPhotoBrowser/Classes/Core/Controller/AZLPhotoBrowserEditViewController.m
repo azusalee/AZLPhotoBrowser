@@ -52,6 +52,11 @@
     [self.selectArray addObjectsFromArray:photoArray];
 }
 
+- (void)viewSafeAreaInsetsDidChange{
+    [super viewSafeAreaInsetsDidChange];
+    self.editBottomView.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height-64-self.view.safeAreaInsets.bottom, [UIScreen mainScreen].bounds.size.width, 64+self.view.safeAreaInsets.bottom);
+}
+
 - (void)setupEditUI{
     //頭部
     CGFloat navBarHeight = 44;

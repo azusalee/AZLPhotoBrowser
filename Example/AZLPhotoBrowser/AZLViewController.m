@@ -47,7 +47,7 @@
     NSMutableArray *models = [[NSMutableArray alloc] init];
     NSInteger index = 0;
     CGFloat x = 0;
-    CGFloat y = 0;
+    CGFloat y = [UIApplication sharedApplication].statusBarFrame.size.height;
     for (NSDictionary *dict in datas) {
         AZLPhotoBrowserModel *model = [[AZLPhotoBrowserModel alloc] init];
         model.originUrlString = dict[@"url"];
