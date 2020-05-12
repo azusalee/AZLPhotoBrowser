@@ -24,6 +24,18 @@
         
         _backgroundColor = [UIColor blackColor];
         _textColor = [UIColor whiteColor];
+        
+        //默認文字
+        _finishString = @"完成";
+        _allString = @"全部";
+        _animateString = @"动图";
+        _cancelString = @"取消";
+        //_moreThanMaxAlertString = @"你最多只能选择9张照片";
+        _moreThanMaxAlertString = @"我知道了";
+        _photoAuthAlertTitleString = @"访问相册";
+        _photoAuthAlertContentString = @"您还没有打开相册权限";
+        _photoAuthOpenString = @"去打开";
+        _editString = @"編輯";
         [self setup];
     }
     return self;

@@ -53,15 +53,15 @@
                 [navVC azl_presentSelf];
                 
             }else{
-                UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:@"访问相册" message:@"您还没有打开相册权限" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.photoAuthAlertTitleString message:[AZLPhotoBrowserManager sharedInstance].theme.photoAuthAlertContentString preferredStyle:UIAlertControllerStyleAlert];
                 
-                UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"去打开" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                UIAlertAction *action1 = [UIAlertAction actionWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.photoAuthOpenString style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                     NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
                     if ([[UIApplication sharedApplication] canOpenURL:url]) {
                         [[UIApplication sharedApplication] openURL:url];
                     }
                 }];
-                UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                UIAlertAction *action2 = [UIAlertAction actionWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.cancelString style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 
                 }];
                 
@@ -110,7 +110,7 @@
     //PHFetchOptions *option = nil;
     // 全部圖
     AZLAlbumModel *allAlbumModel = [[AZLAlbumModel alloc] init];
-    allAlbumModel.title = @"全部";
+    allAlbumModel.title = [AZLPhotoBrowserManager sharedInstance].theme.allString;
     PHFetchResult<PHAssetCollection *> *allResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
     for (PHAssetCollection *collection in allResult) {
         PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
@@ -130,7 +130,7 @@
     
     if (@available(iOS 11, *)) {
         AZLAlbumModel *animateAlbumModel = [[AZLAlbumModel alloc] init];
-        animateAlbumModel.title = @"动图";
+        animateAlbumModel.title = [AZLPhotoBrowserManager sharedInstance].theme.animateString;
         // 動圖
         PHFetchResult<PHAssetCollection *> *animateResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumAnimated options:nil];
         for (PHAssetCollection *collection in animateResult) {
@@ -158,7 +158,7 @@
     
     UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
     cancelButton.tintColor = [AZLPhotoBrowserManager sharedInstance].theme.barTintColor;
-    [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+    [cancelButton setTitle:[AZLPhotoBrowserManager sharedInstance].theme.cancelString forState:UIControlStateNormal];
     cancelButton.titleLabel.font = [UIFont systemFontOfSize:17];
     [cancelButton sizeToFit];
     cancelButton.frame = CGRectMake(15, self.customNavView.bounds.size.height-44, cancelButton.width, 44);
@@ -198,7 +198,7 @@
     
     self.bottomDoneButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.bottomDoneButton.layer.cornerRadius = 4;
-    [self.bottomDoneButton setTitle:@"完成" forState:UIControlStateNormal];
+    [self.bottomDoneButton setTitle:[AZLPhotoBrowserManager sharedInstance].theme.finishString forState:UIControlStateNormal];
     [self.bottomDoneButton sizeToFit];
     self.bottomDoneButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-self.bottomDoneButton.width-15-20, 16, self.bottomDoneButton.width+20, 32);
     [self.bottomDoneButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.enableTextColor forState:UIControlStateNormal];
@@ -330,12 +330,12 @@
 
 - (void)updateDoneButton{
     if (self.selectPhotoArray.count > 0) {
-        [self.bottomDoneButton setTitle:@"完成" forState:UIControlStateNormal];
+        [self.bottomDoneButton setTitle:[AZLPhotoBrowserManager sharedInstance].theme.finishString forState:UIControlStateNormal];
         [self.bottomDoneButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.enableTextColor forState:UIControlStateNormal];
         self.bottomDoneButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.enableBackgroundColor;
         self.bottomDoneButton.enabled = YES;
     }else{
-        [self.bottomDoneButton setTitle:@"完成" forState:UIControlStateNormal];
+        [self.bottomDoneButton setTitle:[AZLPhotoBrowserManager sharedInstance].theme.finishString forState:UIControlStateNormal];
         [self.bottomDoneButton setTitleColor:[AZLPhotoBrowserManager sharedInstance].theme.disableTextColor forState:UIControlStateNormal];
         self.bottomDoneButton.backgroundColor = [AZLPhotoBrowserManager sharedInstance].theme.disableBackgroundColor;
         self.bottomDoneButton.enabled = NO;
@@ -471,8 +471,12 @@
     }else{
         if (self.selectPhotoArray.count == self.maxCount) {
             // 大於最大選擇數
-            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"你最多只能选择%ld张照片", (long)self.maxCount] preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            NSString *errorContent = [AZLPhotoBrowserManager sharedInstance].theme.moreThanMaxAlertString;
+            if (errorContent.length == 0) {
+                errorContent = [NSString stringWithFormat:@"你最多只能选择%ld张照片", (long)self.maxCount];
+            }
+            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:nil message:errorContent preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action2 = [UIAlertAction actionWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.moreThanMaxAlertConfirmString style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             
             }];
             [alertViewController addAction:action2];
