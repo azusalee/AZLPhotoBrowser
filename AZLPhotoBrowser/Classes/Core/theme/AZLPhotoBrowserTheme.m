@@ -35,7 +35,7 @@
         _photoAuthAlertTitleString = @"访问相册";
         _photoAuthAlertContentString = @"您还没有打开相册权限";
         _photoAuthOpenString = @"去打开";
-        _editString = @"編輯";
+        _editString = @"编辑";
         [self setup];
     }
     return self;

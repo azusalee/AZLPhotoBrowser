@@ -6,41 +6,28 @@
 //
 
 #import "AZLPhotoEditViewController.h"
-#import "AZLPhotoBrowserView.h"
+#import <AZLExtend/AZLExtend.h>
 #import <SDWebImage/SDWebImage.h>
+#import "AZLPhotoBrowserView.h"
 #import "AZLPhotoBrowserManager.h"
 #import "AZLEditDrawView.h"
-#import "AZLColorPickView.h"
-#import <AZLExtend/AZLExtend.h>
-
 #import "AZLPathProviderPencil.h"
 #import "AZLPathProviderPen.h"
 #import "AZLScratchView.h"
 #import "AZLEditCropView.h"
 #import "AZLCropRecord.h"
+#import "AZLPhotoEditBottomView.h"
 
-typedef NS_ENUM(NSUInteger, AZLEditType) {
-    AZLEditTypeNone = 0,
-    AZLEditTypePencil,
-    AZLEditTypePen,
-    AZLEditTypeMosaic,
-    AZLEditTypeCrop,
-};
-
-
-@interface AZLPhotoEditViewController () <AZLEditDrawViewDelegate>
+@interface AZLPhotoEditViewController () <AZLEditDrawViewDelegate, AZLPhotoEditBottomViewDelegate>
 
 @property (nonatomic, strong) AZLPhotoBrowserView *browserView;
 
 @property (nonatomic, strong) UIView *editTopView;
-@property (nonatomic, strong) UIView *editBottomView;
-@property (nonatomic, strong) CALayer *editBottomGradientLayer;
+@property (nonatomic, strong) AZLPhotoEditBottomView *editBottomView;
 @property (nonatomic, assign) BOOL isShowingEditUI;
 
 /// 修改圖層view
 @property (nonatomic, strong) AZLEditDrawView *drawView;
-/// 取色器view
-@property (nonatomic, strong) AZLColorPickView *colorPickView;
 /// 馬賽克圖層view
 @property (nonatomic, strong) AZLScratchView *mosaicView;
 /// 馬賽克圖片
@@ -53,18 +40,6 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
 @property (nonatomic, strong) NSMutableArray<AZLCropRecord*> *canRedoCropRecordArray;
 
 @property (nonatomic, strong) UIImage *mosaicImage;
-
-@property (nonatomic, strong) UIButton *undoButton;
-@property (nonatomic, strong) UIButton *redoButton;
-
-@property (nonatomic, strong) UIButton *pencilButton;
-@property (nonatomic, strong) UIButton *penButton;
-@property (nonatomic, strong) UIButton *mosaicButton;
-@property (nonatomic, strong) UIButton *cropButton;
-@property (nonatomic, strong) UIButton *doneButton;
-@property (nonatomic, strong) UIView *editTypeIndicateView;
-
-@property (nonatomic, assign) AZLEditType editType;
 
 @end
 
@@ -117,7 +92,6 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
 - (void)viewSafeAreaInsetsDidChange{
     [super viewSafeAreaInsetsDidChange];
     self.editBottomView.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height-80-self.view.safeAreaInsets.bottom, [UIScreen mainScreen].bounds.size.width, 80+self.view.safeAreaInsets.bottom);
-    self.editBottomGradientLayer.frame = self.editBottomView.bounds;
 }
 
 - (void)setupBrowserUI{
@@ -181,19 +155,10 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     [cancelButton addTarget:self action:@selector(leftBarItemDidTap:) forControlEvents:UIControlEventTouchUpInside];
     
     //底部
-    self.editBottomView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-80, [UIScreen mainScreen].bounds.size.width, 80)];
-    //self.editBottomView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    
-    // 添加漸變層
-    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-    gradientLayer.frame = self.editBottomView.bounds;
-    gradientLayer.colors = @[(id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0].CGColor, (id)[UIColor colorWithRed:0 green:0 blue:0 alpha:1].CGColor]; //设置渐变颜色
-    //gradientLayer.locations = @[@0.0, @1]; //颜色的起点位置，递增，并且数量跟颜色数量相等
-    gradientLayer.startPoint = CGPointMake(0, 0); // 
-    gradientLayer.endPoint = CGPointMake(0, 1); // 
-    [self.editBottomView.layer addSublayer:gradientLayer];
+    self.editBottomView = [[AZLPhotoEditBottomView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-80, [UIScreen mainScreen].bounds.size.width, 80)];
+    self.editBottomView.delegate = self;
     [self.view addSubview:self.editBottomView];
-    self.editBottomGradientLayer = gradientLayer;
+    
     self.isShowingEditUI = YES;
 }
 
@@ -232,76 +197,6 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
         self.browserView.imageView.image = cropImage;
     }
     
-    // 取色器
-    self.colorPickView = [[AZLColorPickView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 30)];
-    self.colorPickView.hidden = YES;
-    __weak AZLPhotoEditViewController *weakSelf = self;
-    [self.colorPickView setBlock:^(UIColor * _Nonnull color) {
-        weakSelf.drawView.pathColor = color;
-    }];
-    [self.editBottomView addSubview:self.colorPickView];
-    
-    self.undoButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.undoButton.hidden = YES;
-    self.undoButton.enabled = (self.photoModel.editRecords.count>0);
-    [self.undoButton setImage:[AZLPhotoBrowserManager sharedInstance].theme.undoImage forState:UIControlStateNormal];
-    [self.undoButton setImage:[[AZLPhotoBrowserManager sharedInstance].theme.undoImage azl_imageWithGradientTintColor:[UIColor lightTextColor]] forState:UIControlStateDisabled];
-    [self.undoButton setTintColor:[UIColor whiteColor]];
-    self.undoButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-85, 30, 30, 30);
-    [self.undoButton addTarget:self action:@selector(undoDidTap:) forControlEvents:UIControlEventTouchUpInside];
-    [self.editBottomView addSubview:self.undoButton];
-    
-    self.redoButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.redoButton.enabled = NO;
-    self.redoButton.hidden = YES;
-    [self.redoButton setImage:[AZLPhotoBrowserManager sharedInstance].theme.redoImage forState:UIControlStateNormal];
-    [self.redoButton setImage:[[AZLPhotoBrowserManager sharedInstance].theme.redoImage azl_imageWithGradientTintColor:[UIColor lightTextColor]] forState:UIControlStateDisabled];
-    [self.redoButton setTintColor:[UIColor whiteColor]];
-    self.redoButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-45, 30, 30, 30);
-    [self.redoButton addTarget:self action:@selector(redoDidTap:) forControlEvents:UIControlEventTouchUpInside];
-    [self.editBottomView addSubview:self.redoButton];
-    
-    self.doneButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.doneButton.hidden = YES;
-    self.doneButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-75, [UIApplication sharedApplication].statusBarFrame.size.height+7, 60, 30);
-    [self.doneButton setTitle:@"裁剪" forState:UIControlStateNormal];
-    [self.doneButton setTintColor:[UIColor whiteColor]];
-    [self.doneButton addTarget:self action:@selector(doneDidTap:) forControlEvents:UIControlEventTouchUpInside];
-    [self.editTopView addSubview:self.doneButton];
-    
-    self.editTypeIndicateView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    self.editTypeIndicateView.layer.borderWidth = 1;
-    self.editTypeIndicateView.layer.borderColor = [UIColor whiteColor].CGColor;
-    self.editTypeIndicateView.hidden = YES;
-    [self.editBottomView addSubview:self.editTypeIndicateView];
-    
-    self.pencilButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.pencilButton.frame = CGRectMake(15, 38, 30, 30);
-    [self.pencilButton setTitle:@"铅" forState:UIControlStateNormal];
-    [self.pencilButton setTintColor:[UIColor whiteColor]];
-    [self.pencilButton addTarget:self action:@selector(pencilDidTap:) forControlEvents:UIControlEventTouchUpInside];
-    [self.editBottomView addSubview:self.pencilButton];
-    
-    self.penButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.penButton.frame = CGRectMake(55, 38, 30, 30);
-    [self.penButton setTitle:@"钢" forState:UIControlStateNormal];
-    [self.penButton setTintColor:[UIColor whiteColor]];
-    [self.penButton addTarget:self action:@selector(penDidTap:) forControlEvents:UIControlEventTouchUpInside];
-    [self.editBottomView addSubview:self.penButton];
-    
-    self.mosaicButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.mosaicButton.frame = CGRectMake(95, 38, 30, 30);
-    [self.mosaicButton setTitle:@"马" forState:UIControlStateNormal];
-    [self.mosaicButton setTintColor:[UIColor whiteColor]];
-    [self.mosaicButton addTarget:self action:@selector(mosaicDidTap:) forControlEvents:UIControlEventTouchUpInside];
-    [self.editBottomView addSubview:self.mosaicButton];
-    
-    self.cropButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.cropButton.frame = CGRectMake(135, 38, 30, 30);
-    [self.cropButton setTitle:@"裁" forState:UIControlStateNormal];
-    [self.cropButton setTintColor:[UIColor whiteColor]];
-    [self.cropButton addTarget:self action:@selector(cropDidTap:) forControlEvents:UIControlEventTouchUpInside];
-    [self.editBottomView addSubview:self.cropButton];
 }
 
 - (void)leftBarItemDidTap:(id)sender {
@@ -312,8 +207,8 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     }
 }
 
-- (void)undoDidTap:(UIButton*)button {
-    if (self.editType == AZLEditTypeCrop) {
+- (void)undoEdit {
+    if (self.editBottomView.editType == AZLEditTypeCrop) {
         if (self.cropRecordArray.count > 0) {
             NSInteger index = self.cropRecordArray.count-1;
             AZLCropRecord *cropRecord = self.cropRecordArray[index];
@@ -322,15 +217,15 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
             
             [self applyCropRecord:cropRecord isRedo:NO];
         }
-    }else if (self.editType == AZLEditTypeMosaic) {
+    }else if (self.editBottomView.editType == AZLEditTypeMosaic) {
         [self.mosaicView.drawView removeLastRecord];
     }else{
         [self.drawView removeLastRecord];
     }
 }
 
-- (void)redoDidTap:(UIButton*)button {
-    if (self.editType == AZLEditTypeCrop) {
+- (void)redoEdit {
+    if (self.editBottomView.editType == AZLEditTypeCrop) {
         if (self.canRedoCropRecordArray.count > 0) {
             NSInteger index = self.canRedoCropRecordArray.count-1;
             AZLCropRecord *cropRecord = self.canRedoCropRecordArray[index];
@@ -339,14 +234,14 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
             
             [self applyCropRecord:cropRecord isRedo:YES];
         }
-    }else if (self.editType == AZLEditTypeMosaic) {
+    }else if (self.editBottomView.editType == AZLEditTypeMosaic) {
         [self.mosaicView.drawView redoLastRecord];
     }else{
         [self.drawView redoLastRecord];
     }
 }
 
-- (void)doneDidTap:(UIButton*)button{
+- (void)doneDidTap {
     CGFloat scale = self.browserView.imageView.image.size.width/self.browserView.imageView.bounds.size.width;
     CGRect cropRect = [self.cropView convertRect:self.cropView.bounds toView:self.browserView.imageView];
     CGRect imageCropRect = CGRectMake(cropRect.origin.x*scale, cropRect.origin.y*scale, cropRect.size.width*scale, cropRect.size.height*scale);
@@ -367,8 +262,8 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
 }
 
 - (void)applyCropRecord:(AZLCropRecord*)cropRecord isRedo:(BOOL)isRedo{
-    self.redoButton.enabled = self.canRedoCropRecordArray.count>0;
-    self.undoButton.enabled = self.cropRecordArray.count>0;
+    self.editBottomView.redoEnable = self.canRedoCropRecordArray.count>0;
+    self.editBottomView.undoEnable = self.cropRecordArray.count>0;
     CGRect cropRect = CGRectZero;
     if (isRedo) {
         [self.drawView redoCropRecord:cropRecord];
@@ -400,110 +295,33 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
 }
 
 - (void)setEditType:(AZLEditType)editType{
-    _editType = editType;
     self.browserView.scrollView.scrollEnabled = NO;
     self.drawView.userInteractionEnabled = NO;
     self.mosaicView.userInteractionEnabled = NO;
-    self.editTypeIndicateView.hidden = YES;
-    self.colorPickView.hidden = YES;
-    self.redoButton.hidden = YES;
-    self.undoButton.hidden = YES;
     self.cropView.hidden = YES;
-    self.doneButton.hidden = YES;
     switch (editType) {
         case AZLEditTypeNone:
             self.browserView.scrollView.scrollEnabled = YES;
             
             break;
-        case AZLEditTypePencil:
-            self.colorPickView.hidden = NO;
+        case AZLEditTypePath:
             self.drawView.userInteractionEnabled = YES;
-            self.drawView.pathProvider = [[AZLPathProviderPencil alloc] init];
-            self.editTypeIndicateView.center = self.pencilButton.center;
-            self.editTypeIndicateView.hidden = NO;
-            self.redoButton.hidden = NO;
-            self.undoButton.hidden = NO;
-            self.redoButton.enabled = [self.drawView getRedoRecords].count>0;
-            self.undoButton.enabled = [self.drawView getEditRecords].count>0;
-            break;
-        case AZLEditTypePen:
-            self.colorPickView.hidden = NO;
-            self.drawView.userInteractionEnabled = YES;
-            self.drawView.pathProvider = [[AZLPathProviderPen alloc] init];
-            self.editTypeIndicateView.center = self.penButton.center;
-            self.editTypeIndicateView.hidden = NO;
-            self.redoButton.hidden = NO;
-            self.undoButton.hidden = NO;
-            self.redoButton.enabled = [self.drawView getRedoRecords].count>0;
-            self.undoButton.enabled = [self.drawView getEditRecords].count>0;
+            self.editBottomView.redoEnable = [self.drawView getRedoRecords].count>0;
+            self.editBottomView.undoEnable = [self.drawView getEditRecords].count>0;
             break;
         case AZLEditTypeMosaic:
-            self.editTypeIndicateView.hidden = NO;
-            self.editTypeIndicateView.center = self.mosaicButton.center;
             self.mosaicView.userInteractionEnabled = YES;
-            self.redoButton.hidden = NO;
-            self.undoButton.hidden = NO;
-            self.redoButton.enabled = [self.mosaicView.drawView getRedoRecords].count>0;
-            self.undoButton.enabled = [self.mosaicView.drawView getEditRecords].count>0;
+            self.editBottomView.redoEnable = [self.mosaicView.drawView getRedoRecords].count>0;
+            self.editBottomView.undoEnable = [self.mosaicView.drawView getEditRecords].count>0;
             break;
         case AZLEditTypeCrop:
-            self.editTypeIndicateView.hidden = NO;
-            self.editTypeIndicateView.center = self.cropButton.center;
             self.browserView.scrollView.scrollEnabled = YES;
-            self.editTypeIndicateView.center = self.cropButton.center;
             self.cropView.hidden = NO;
-            self.doneButton.hidden = NO;
-            self.redoButton.hidden = NO;
-            self.undoButton.hidden = NO;
-            self.redoButton.enabled = self.canRedoCropRecordArray.count>0;
-            self.undoButton.enabled = self.cropRecordArray.count>0;
+            self.editBottomView.redoEnable = self.canRedoCropRecordArray.count>0;
+            self.editBottomView.undoEnable = self.cropRecordArray.count>0;
             break;
         default:
             break;
-    }
-}
-
-- (void)pencilDidTap:(UIButton*)button {
-    if (self.photoModel.image == nil) {
-        return;
-    }
-    if (self.editType != AZLEditTypePencil) {
-        self.editType = AZLEditTypePencil;
-    }else{
-        self.editType = AZLEditTypeNone;
-    }
-}
-
-- (void)penDidTap:(UIButton*)button{
-    if (self.photoModel.image == nil) {
-        return;
-    }
-    if (self.editType != AZLEditTypePen) {
-        self.editType = AZLEditTypePen;
-    }else{
-        self.editType = AZLEditTypeNone;
-    }
-}
-
-- (void)mosaicDidTap:(UIButton*)button{
-    if (self.photoModel.image == nil) {
-        return;
-    }
-    if (self.editType != AZLEditTypeMosaic) {
-        self.editType = AZLEditTypeMosaic;
-    }else{
-        self.editType = AZLEditTypeNone;
-    }
-}
-
-- (void)cropDidTap:(UIButton*)button{
-    if (self.photoModel.image == nil) {
-        return;
-    }
-    if (self.editType != AZLEditTypeCrop) {
-        self.editType = AZLEditTypeCrop;
-    }else{
-        self.editType = AZLEditTypeNone;
     }
 }
 
@@ -570,13 +388,41 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     NSInteger editCount = [drawView getEditRecords].count;
     NSInteger redoCount = [drawView getRedoRecords].count;
     
-    self.redoButton.enabled = redoCount>0;
-    self.undoButton.enabled = editCount>0;
+    self.editBottomView.redoEnable = redoCount>0;
+    self.editBottomView.undoEnable = editCount>0;
     [self showEditUI];
 }
 
 - (void)editDrawViewEditingPath:(AZLEditDrawView *)drawView{
     [self hideEditUI];
+}
+
+// editBottomViewDelegate
+- (void)editBottomViewUndoDidTap:(AZLPhotoEditBottomView*)editBottomView{
+    [self undoEdit];
+}
+- (void)editBottomViewRedoDidTap:(AZLPhotoEditBottomView*)editBottomView{
+    [self redoEdit];
+}
+
+- (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView pathColorDidChange:(UIColor*)color{
+    self.drawView.pathColor = color;
+}
+
+- (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView editTypeDidChange:(AZLEditType)editType{
+    [self setEditType:editType];
+}
+
+- (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView pathTypeDidChange:(AZLEditPathType)pathType{
+    if (pathType == AZLEditPathTypePencil) {
+        [self.drawView setPathProvider:[[AZLPathProviderPencil alloc] init]];
+    }else if (pathType == AZLEditPathTypePen) {
+        [self.drawView setPathProvider:[[AZLPathProviderPen alloc] init]];
+    }
+}
+
+- (void)editBottomViewDoneDidTap:(AZLPhotoEditBottomView*)editBottomView{
+    [self doneDidTap];
 }
 
 /*
