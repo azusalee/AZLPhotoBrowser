@@ -5,6 +5,10 @@
 [![License](https://img.shields.io/cocoapods/l/AZLPhotoBrowser.svg?style=flat)](https://cocoapods.org/pods/AZLPhotoBrowser)
 [![Platform](https://img.shields.io/cocoapods/p/AZLPhotoBrowser.svg?style=flat)](https://cocoapods.org/pods/AZLPhotoBrowser)
 
+## 说明
+
+这是一个用于图片浏览库，包含图片浏览，图片编辑，相册挑选照片的功能，具体请看demo。
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
