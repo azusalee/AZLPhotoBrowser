@@ -44,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSArray<AZLEditRecord*> *mosaicRecords;
 /// 裁剪記錄
 @property (nonatomic, strong, nullable) NSArray<AZLCropRecord*> *cropRecords;
+/// 贴字记录
+@property (nonatomic, strong, nullable) UIView *editTileView;
 /// 编辑过的图片
 @property (nonatomic, strong, nullable) UIImage *editImage;
 /// 编辑过的图片的縮率圖

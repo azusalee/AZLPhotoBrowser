@@ -14,6 +14,7 @@ typedef NS_ENUM(NSUInteger, AZLEditType) {
     AZLEditTypePath,
     AZLEditTypeMosaic,
     AZLEditTypeCrop,
+    AZLEditTypeTile,
 };
 
 typedef NS_ENUM(NSUInteger, AZLEditPathType) {
@@ -27,13 +28,14 @@ typedef NS_ENUM(NSUInteger, AZLEditPathType) {
 - (void)editBottomViewUndoDidTap:(AZLPhotoEditBottomView*)editBottomView;
 - (void)editBottomViewRedoDidTap:(AZLPhotoEditBottomView*)editBottomView;
 
-- (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView pathColorDidChange:(UIColor*)color;
+- (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView colorDidChange:(UIColor*)color;
 
 - (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView editTypeDidChange:(AZLEditType)editType;
 
 - (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView pathTypeDidChange:(AZLEditPathType)pathType;
 
 - (void)editBottomViewDoneDidTap:(AZLPhotoEditBottomView*)editBottomView;
+- (void)editBottomViewAddDidTap:(AZLPhotoEditBottomView*)editBottomView;
 
 @end
 

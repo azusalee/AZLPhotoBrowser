@@ -25,6 +25,8 @@
 @property (nonatomic, strong) UIButton *mosaicButton;
 @property (nonatomic, strong) UIButton *cropButton;
 @property (nonatomic, strong) UIButton *doneButton;
+@property (nonatomic, strong) UIButton *tileButton;
+@property (nonatomic, strong) UIButton *addButton;
 
 @property (nonatomic, strong) UIButton *undoButton;
 @property (nonatomic, strong) UIButton *redoButton;
@@ -64,7 +66,7 @@
     __weak AZLPhotoEditBottomView *weakSelf = self;
     [self.colorPickView setBlock:^(UIColor * _Nonnull color) {
         //weakSelf.drawView.pathColor = color;
-        [weakSelf.delegate editBottomView:weakSelf pathColorDidChange:color];
+        [weakSelf.delegate editBottomView:weakSelf colorDidChange:color];
     }];
     [self addSubview:self.colorPickView];
     
@@ -147,6 +149,26 @@
     self.doneButton.titleLabel.font = [UIFont systemFontOfSize:18];
     [self.doneButton addTarget:self action:@selector(doneDidTap:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.doneButton];
+    
+    self.tileButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.tileButton.frame = CGRectMake(135, 38, 30, 30);
+    [self.tileButton setTitle:@"贴" forState:UIControlStateNormal];
+    [self.tileButton setTintColor:[UIColor whiteColor]];
+    [self.tileButton addTarget:self action:@selector(tileDidTap:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.tileButton];
+    
+    self.addButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.addButton.hidden = YES;
+    self.addButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/2-30, -44, 60, 40);
+    [self.addButton setTitle:@"添加" forState:UIControlStateNormal];
+    [self.addButton setTintColor:[UIColor whiteColor]];
+    self.addButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.addButton.layer.borderWidth = 1;
+    self.addButton.layer.cornerRadius = 8;
+    self.addButton.titleLabel.font = [UIFont systemFontOfSize:18];
+    [self.addButton addTarget:self action:@selector(addDidTap:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.addButton];
+    
 }
 
 - (void)setUndoEnable:(BOOL)undoEnable{
@@ -175,6 +197,7 @@
     self.pencilButton.hidden = YES;
     self.penButton.hidden = YES;
     self.doneButton.hidden = YES;
+    self.addButton.hidden = YES;
     
     switch (editType) {
         case AZLEditTypeNone:
@@ -203,6 +226,13 @@
             self.redoButton.hidden = NO;
             self.undoButton.hidden = NO;
             self.doneButton.hidden = NO;
+            break;
+        case AZLEditTypeTile:
+            self.editTypeIndicateView.hidden = NO;
+            self.editTypeIndicateView.center = self.tileButton.center;
+            self.colorPickView.hidden = NO;
+            self.addButton.hidden = NO;
+            
             break;
         default:
             break;
@@ -273,6 +303,19 @@
     [self.delegate editBottomView:self editTypeDidChange:self.editType];
 }
 
+- (void)tileDidTap:(UIButton*)button{
+    if (self.editType != AZLEditTypeTile) {
+        self.editType = AZLEditTypeTile;
+    }else{
+        self.editType = AZLEditTypeNone;
+    }
+    [self.delegate editBottomView:self editTypeDidChange:self.editType];
+}
+
+- (void)addDidTap:(UIButton*)button{
+    [self.delegate editBottomViewAddDidTap:self];
+}
+
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
     if (self.isHidden == YES || self.userInteractionEnabled == NO) {
         return nil;
@@ -287,6 +330,10 @@
     }else if (self.editType == AZLEditTypeCrop) {
         if (CGRectContainsPoint(self.doneButton.frame, point)) {
             return self.doneButton;
+        }
+    }else if (self.editType == AZLEditTypeTile) {
+        if (CGRectContainsPoint(self.addButton.frame, point)) {
+            return self.addButton;
         }
     }
     return [super hitTest:point withEvent:event];

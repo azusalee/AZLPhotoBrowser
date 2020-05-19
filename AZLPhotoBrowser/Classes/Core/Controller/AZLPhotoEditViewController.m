@@ -17,6 +17,8 @@
 #import "AZLEditCropView.h"
 #import "AZLCropRecord.h"
 #import "AZLPhotoEditBottomView.h"
+#import "AZLTileTextView.h"
+#import "AZLTileContainerView.h"
 
 @interface AZLPhotoEditViewController () <AZLEditDrawViewDelegate, AZLPhotoEditBottomViewDelegate>
 
@@ -34,6 +36,8 @@
 @property (nonatomic, strong) UIImageView *mosaicImageView;
 /// 裁剪圖層view
 @property (nonatomic, strong) AZLEditCropView *cropView;
+/// 貼圖圖層view
+@property (nonatomic, strong) AZLTileContainerView *tileView;
 /// 當前已做過的裁剪記錄
 @property (nonatomic, strong) NSMutableArray<AZLCropRecord*> *cropRecordArray;
 /// 可以重做的裁剪記錄
@@ -175,6 +179,7 @@
 }
 
 - (void)setupDrawUI{
+    // 路徑圖層
     self.drawView = [[AZLEditDrawView alloc] initWithFrame:self.browserView.imageView.bounds];
     self.drawView.userInteractionEnabled = NO;
     self.drawView.delegate = self;
@@ -197,6 +202,20 @@
         self.browserView.imageView.image = cropImage;
     }
     
+    //貼圖圖層
+    if (self.photoModel.editTileView != nil) {
+        self.tileView = (AZLTileContainerView*)self.photoModel.editTileView;
+//        self.tileView.transform = CGAffineTransformIdentity;
+//        self.tileView.frame = self.browserView.imageView.bounds;
+//        self.tileView.originBounds = self.browserView.imageView.bounds;
+    }else{
+        self.tileView = [[AZLTileContainerView alloc] initWithFrame:self.browserView.imageView.bounds];
+    }
+    
+    //self.tileView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.tileView.userInteractionEnabled = NO;
+    [self.browserView.imageView addSubview:self.tileView];
+    [self.tileView updateScaleWithBounds:self.browserView.imageView.bounds];
 }
 
 - (void)leftBarItemDidTap:(id)sender {
@@ -268,10 +287,12 @@
     if (isRedo) {
         [self.drawView redoCropRecord:cropRecord];
         [self.mosaicView.drawView redoCropRecord:cropRecord];
+        [self.tileView redoCropRecord:cropRecord];
         cropRect = cropRecord.imageCropRect;
     }else{
         [self.drawView undoCropRecord:cropRecord];
         [self.mosaicView.drawView undoCropRecord:cropRecord];
+        [self.tileView undoCropRecord:cropRecord];
         if (cropRecord.lastCropRect.size.width > 0) {
             cropRect = cropRecord.lastCropRect;
         }
@@ -298,6 +319,7 @@
     self.browserView.scrollView.scrollEnabled = NO;
     self.drawView.userInteractionEnabled = NO;
     self.mosaicView.userInteractionEnabled = NO;
+    self.tileView.userInteractionEnabled = NO;
     self.cropView.hidden = YES;
     switch (editType) {
         case AZLEditTypeNone:
@@ -320,6 +342,10 @@
             self.editBottomView.redoEnable = self.canRedoCropRecordArray.count>0;
             self.editBottomView.undoEnable = self.cropRecordArray.count>0;
             break;
+        case AZLEditTypeTile:
+            self.tileView.userInteractionEnabled = YES;
+            self.browserView.scrollView.scrollEnabled = YES;
+            break;
         default:
             break;
     }
@@ -330,7 +356,7 @@
     UIImage *oriImage = self.browserView.imageView.image;
     NSArray *editRecords = [self.drawView getEditRecords];
     NSArray *mosaicRecords = [self.mosaicView.drawView getEditRecords];
-    if (editRecords.count > 0 || mosaicRecords.count > 0 || self.cropRecordArray.count > 0) {
+    if (editRecords.count > 0 || mosaicRecords.count > 0 || self.cropRecordArray.count > 0 || self.tileView.subviews.count > 0) {
         
         CGFloat scale = [UIScreen mainScreen].scale;
         CGRect renderRect = CGRectMake(0, 0, oriImage.size.width, oriImage.size.height);
@@ -375,12 +401,14 @@
         self.photoModel.editRecords = editRecords;
         self.photoModel.mosaicRecords = mosaicRecords;
         self.photoModel.cropRecords = self.cropRecordArray.copy;
+        self.photoModel.editTileView = self.tileView;
     }else{
         self.photoModel.editImage = nil;
         self.photoModel.smallEditImage = nil;
         self.photoModel.editRecords = nil;
         self.photoModel.mosaicRecords = nil;
         self.photoModel.cropRecords = nil;
+        self.photoModel.editTileView = nil;
     }
 }
 
@@ -405,8 +433,9 @@
     [self redoEdit];
 }
 
-- (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView pathColorDidChange:(UIColor*)color{
+- (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView colorDidChange:(UIColor*)color{
     self.drawView.pathColor = color;
+    self.tileView.tileColor = color;
 }
 
 - (void)editBottomView:(AZLPhotoEditBottomView*)editBottomView editTypeDidChange:(AZLEditType)editType{
@@ -423,6 +452,13 @@
 
 - (void)editBottomViewDoneDidTap:(AZLPhotoEditBottomView*)editBottomView{
     [self doneDidTap];
+}
+
+- (void)editBottomViewAddDidTap:(AZLPhotoEditBottomView *)editBottomView{
+    AZLTileTextView *textTile = [[AZLTileTextView alloc] initWithFrame:CGRectMake(self.tileView.width/2-50, self.tileView.height/2-15, 100, 30)];
+    textTile.textView.textColor = self.tileView.tileColor;
+    [self.tileView addSubview:textTile];
+    [textTile.textView becomeFirstResponder];
 }
 
 /*
