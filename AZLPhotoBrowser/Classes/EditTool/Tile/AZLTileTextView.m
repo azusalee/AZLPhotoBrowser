@@ -10,7 +10,6 @@
 
 @interface AZLTileTextView()<UITextViewDelegate>
 
-@property (nonatomic, assign) CGFloat fontSize;
 
 @end
 
@@ -26,7 +25,6 @@
         _textView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _textView.backgroundColor = [UIColor clearColor];
         _textView.font = [UIFont systemFontOfSize:14];
-        _fontSize = 14;
         [self addSubview:_textView];
         UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewDidTap:)];
         [self addGestureRecognizer:tapGes];
@@ -43,8 +41,11 @@
 }
 
 - (void)textViewDidChange:(UITextView *)textView{
-    self.height = textView.contentSize.height;
+    self.transform = CGAffineTransformIdentity;
+    CGFloat textHeight = [textView.text boundingRectWithSize:CGSizeMake(84, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size.height+20;
     
+    self.height = textHeight;
+    [self updateTransform];
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView{

@@ -23,6 +23,7 @@
         [self addGestureRecognizer:gesture];
         self.layer.anchorPoint = CGPointMake(0, 0);
         self.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
+        self.clipsToBounds = YES;
     }
     return self;
 }
@@ -70,11 +71,13 @@
         self.frame = CGRectMake(0, 0, cropRecord.lastCropRect.size.width*scale, cropRecord.lastCropRect.size.height*scale);
     }
     self.originBounds = self.frame;
-    for (UIView *subView in self.subviews) {
+    for (AZLTileView *subView in self.subviews) {
         if (cropRecord.lastCropRect.size.width > 0) {
-            subView.frame = CGRectMake((cropRecord.imageCropRect.origin.x-cropRecord.lastCropRect.origin.x)*scale+subView.frame.origin.x, (cropRecord.imageCropRect.origin.y-cropRecord.lastCropRect.origin.y)*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
+            [subView addTranslate:CGPointMake((cropRecord.imageCropRect.origin.x-cropRecord.lastCropRect.origin.x)*scale, (cropRecord.imageCropRect.origin.y-cropRecord.lastCropRect.origin.y)*scale)];
+//            subView.frame = CGRectMake((cropRecord.imageCropRect.origin.x-cropRecord.lastCropRect.origin.x)*scale+subView.frame.origin.x, (cropRecord.imageCropRect.origin.y-cropRecord.lastCropRect.origin.y)*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
         }else{
-            subView.frame = CGRectMake(cropRecord.imageCropRect.origin.x*scale+subView.frame.origin.x, cropRecord.imageCropRect.origin.y*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
+            [subView addTranslate:CGPointMake(cropRecord.imageCropRect.origin.x*scale, cropRecord.imageCropRect.origin.y*scale)];
+//            subView.frame = CGRectMake(cropRecord.imageCropRect.origin.x*scale+subView.frame.origin.x, cropRecord.imageCropRect.origin.y*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
         }
     }
 }
@@ -90,11 +93,13 @@
     }
     self.frame = CGRectMake(0, 0, cropRecord.imageCropRect.size.width*scale, cropRecord.imageCropRect.size.height*scale);
     self.originBounds = self.frame;
-    for (UIView *subView in self.subviews) {
+    for (AZLTileView *subView in self.subviews) {
         if (cropRecord.lastCropRect.size.width > 0) {
-            subView.frame = CGRectMake((-cropRecord.imageCropRect.origin.x+cropRecord.lastCropRect.origin.x)*scale+subView.frame.origin.x, (-cropRecord.imageCropRect.origin.y+cropRecord.lastCropRect.origin.y)*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
+            [subView addTranslate:CGPointMake((-cropRecord.imageCropRect.origin.x+cropRecord.lastCropRect.origin.x)*scale, (-cropRecord.imageCropRect.origin.y+cropRecord.lastCropRect.origin.y)*scale)];
+//            subView.frame = CGRectMake((-cropRecord.imageCropRect.origin.x+cropRecord.lastCropRect.origin.x)*scale+subView.frame.origin.x, (-cropRecord.imageCropRect.origin.y+cropRecord.lastCropRect.origin.y)*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
         }else{
-            subView.frame = CGRectMake(-cropRecord.imageCropRect.origin.x*scale+subView.frame.origin.x, -cropRecord.imageCropRect.origin.y*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
+            [subView addTranslate:CGPointMake(-cropRecord.imageCropRect.origin.x*scale, -cropRecord.imageCropRect.origin.y*scale)];
+//            subView.frame = CGRectMake(-cropRecord.imageCropRect.origin.x*scale+subView.frame.origin.x, -cropRecord.imageCropRect.origin.y*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
         }
     }
 }
