@@ -6,9 +6,10 @@
 //
 
 #import "AZLTileContainerView.h"
-#import "AZLTileView.h"
+#import "AZLTileTextView.h"
+#import <AZLExtend/AZLExtend.h>
 
-@interface AZLTileContainerView()<UIGestureRecognizerDelegate>
+@interface AZLTileContainerView()<UIGestureRecognizerDelegate, AZLTileViewDelegate>
 
 @end
 
@@ -104,9 +105,46 @@
     }
 }
 
-- (void)dealloc{
-    //[self.superview removeObserver:self forKeyPath:@"bounds"];
+- (void)addTextTile{
+    CGRect rectInWindow = [self convertRect:self.bounds toView:[UIApplication sharedApplication].keyWindow];
+    CGFloat offsetX = 0.5;
+    if (rectInWindow.size.width > [UIScreen mainScreen].bounds.size.width) {
+        offsetX = (-rectInWindow.origin.x+[UIScreen mainScreen].bounds.size.width*0.5)/rectInWindow.size.width;
+    }
+    
+    CGFloat offsetY = 0.5;
+    if (rectInWindow.size.height > [UIScreen mainScreen].bounds.size.height) {
+        offsetY = (-rectInWindow.origin.y+[UIScreen mainScreen].bounds.size.height*0.5)/rectInWindow.size.height;
+    }
+    
+    CGFloat x = _originBounds.size.width*offsetX-50;
+    CGFloat y = _originBounds.size.height*offsetY-15;
+    if (x < 0) {
+        x = 0;
+    }
+    if (y < 0) {
+        y = 0;
+    }
+    AZLTileTextView *textTile = [[AZLTileTextView alloc] initWithFrame:CGRectMake(x, y, 100, 30)];
+    
+    textTile.textView.textColor = self.tileColor;
+    [self addSubview:textTile];
+    [textTile.textView becomeFirstResponder];
+    textTile.delegate = self;
 }
+
+/// 开始编辑
+- (void)tileViewDidBeginEditing:(AZLTileView*)tileView{
+    [self.delegate tileContainerViewDidBeginEditing:self];
+}
+/// 结束编辑
+- (void)tileViewDidEndEditing:(AZLTileView*)tileView{
+    [self.delegate tileContainerViewDidEndEditing:self];
+}
+
+//- (void)dealloc{
+//    //[self.superview removeObserver:self forKeyPath:@"bounds"];
+//}
 
 //- (void)layoutSubviews{
 //    [super layoutSubviews];

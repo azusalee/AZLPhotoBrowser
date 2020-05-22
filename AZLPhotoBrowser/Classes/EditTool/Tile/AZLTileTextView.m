@@ -34,9 +34,12 @@
 
 - (void)viewDidTap:(UITapGestureRecognizer *)gesture{
     if (gesture.state == UIGestureRecognizerStateEnded){
-        self.textView.userInteractionEnabled = YES;
-        [self.textView becomeFirstResponder];
-        
+        if ([self.superview azl_getResponseView]) {
+            [self.superview endEditing:YES];
+        }else{
+            self.textView.userInteractionEnabled = YES;
+            [self.textView becomeFirstResponder];
+        }
     }
 }
 

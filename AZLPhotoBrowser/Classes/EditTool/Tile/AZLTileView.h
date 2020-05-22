@@ -9,7 +9,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class AZLTileView;
+@protocol AZLTileViewDelegate <NSObject>
+
+/// 开始编辑
+- (void)tileViewDidBeginEditing:(AZLTileView*)tileView;
+/// 结束编辑
+- (void)tileViewDidEndEditing:(AZLTileView*)tileView;
+
+@end
+
 @interface AZLTileView : UIView
+
+@property (nonatomic, weak) id<AZLTileViewDelegate> delegate;
 
 @property (nonatomic, assign, readonly) CGPoint originPoint;
 

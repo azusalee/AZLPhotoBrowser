@@ -20,7 +20,7 @@
 #import "AZLTileTextView.h"
 #import "AZLTileContainerView.h"
 
-@interface AZLPhotoEditViewController () <AZLEditDrawViewDelegate, AZLPhotoEditBottomViewDelegate>
+@interface AZLPhotoEditViewController () <AZLEditDrawViewDelegate, AZLPhotoEditBottomViewDelegate, AZLTileContainerViewDelegate>
 
 @property (nonatomic, strong) AZLPhotoBrowserView *browserView;
 
@@ -211,6 +211,7 @@
     }else{
         self.tileView = [[AZLTileContainerView alloc] initWithFrame:self.browserView.imageView.bounds];
     }
+    self.tileView.delegate = self;
     
     //self.tileView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.tileView.userInteractionEnabled = NO;
@@ -455,10 +456,16 @@
 }
 
 - (void)editBottomViewAddDidTap:(AZLPhotoEditBottomView *)editBottomView{
-    AZLTileTextView *textTile = [[AZLTileTextView alloc] initWithFrame:CGRectMake(self.tileView.width/2-50, self.tileView.height/2-15, 100, 30)];
-    textTile.textView.textColor = self.tileView.tileColor;
-    [self.tileView addSubview:textTile];
-    [textTile.textView becomeFirstResponder];
+    [self.tileView addTextTile];
+}
+
+/// 开始编辑
+- (void)tileContainerViewDidBeginEditing:(AZLTileContainerView*)tileContainerView{
+    [self hideEditUI];
+}
+/// 结束编辑
+- (void)tileContainerViewDidEndEditing:(AZLTileContainerView*)tileContainerView{
+    [self showEditUI];
 }
 
 /*
