@@ -49,6 +49,7 @@
     self.scrollView.minimumZoomScale = 1;
     self.scrollView.maximumZoomScale = 2;
     self.scrollView.delegate = self;
+    self.scrollView.pinchGestureRecognizer.enabled = NO;
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.imageView = [[UIImageView alloc] initWithFrame:self.scrollView.bounds];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -255,7 +256,7 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-    if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
+    if (otherGestureRecognizer.view != self.scrollView) {
         return NO;
     }
     return YES;

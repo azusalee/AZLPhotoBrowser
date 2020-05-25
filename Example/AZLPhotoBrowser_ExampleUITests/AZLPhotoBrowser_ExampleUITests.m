@@ -39,20 +39,22 @@
     [[[element childrenMatchingType:XCUIElementTypeImage] elementBoundByIndex:0] tap];
     
     XCUIElementQuery *collectionViewsQuery = app.collectionViews;
+    
     XCUIElement *image = [collectionViewsQuery/*@START_MENU_TOKEN@*/.scrollViews/*[[".cells.scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ childrenMatchingType:XCUIElementTypeImage].element;
     // 滑動點擊等操作
-    [image swipeUp];
+    //[image swipeUp];
     [image tap];
     [image tap];
     [image tap];
     [image tap];
-    [image swipeLeft];
+    sleep(2);
     [image pinchWithScale:3 velocity:1];
     sleep(2);
     [image tap];
     [image tap];
     [image pinchWithScale:0.3 velocity:-0.2];
     sleep(2);
+    [image swipeLeft];
     [image swipeLeft];
     [image swipeLeft];
     [image swipeRight];
@@ -138,95 +140,115 @@
     XCUIApplication *app = [[XCUIApplication alloc] init];
     [app launch];
     
-    XCUIElement *element6 = [[[[app childrenMatchingType:XCUIElementTypeWindow] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeOther].element childrenMatchingType:XCUIElementTypeOther].element;
+    XCUIElement *window = [[app childrenMatchingType:XCUIElementTypeWindow] elementBoundByIndex:0];
+    XCUIElement *element6 = [[window childrenMatchingType:XCUIElementTypeOther].element childrenMatchingType:XCUIElementTypeOther].element;
     XCUIElement *image = [[[element6 childrenMatchingType:XCUIElementTypeOther].element childrenMatchingType:XCUIElementTypeImage] elementBoundByIndex:5];
     [image tap];
     
-    XCUIElement *image2 = [app.scrollViews childrenMatchingType:XCUIElementTypeImage].element;
-    [image2 tap];
-    sleep(2);
-    [image2 tap];
-    
-    XCUIElement *button = app.buttons[@"\u94c5"];
+    XCUIElement *button = app.buttons[@"\u7b14"];
+    [button tap];
     [button tap];
     
-    XCUIElement *element = [[image2 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:1];
-    [element swipeDown];
-    
-    XCUIElement *element4 = [[element6 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:2];
-    XCUIElement *element2 = [[element4 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:0];
-    [element2 tap];
-    [element swipeDown];
-    
-    XCUIElement *button2 = app.buttons[@"\u94a2"];
+    XCUIElement *button2 = app.buttons[@"\u9a6c"];
     [button2 tap];
-    [element swipeRight];
-    [[element2 childrenMatchingType:XCUIElementTypeOther].element swipeRight];
-    [element swipeRight];
-    [button tap];
-    [button tap];
+    [button2 tap];
     
-    XCUIElement *button3 = app.buttons[@"\u9a6c"];
+    XCUIElement *button3 = app.buttons[@"\u88c1"];
     [button3 tap];
+    [button3 tap];
+    
+    XCUIElement *button4 = app.buttons[@"\u8d34"];
+    [button4 tap];
+    [button4 tap];
+    [button tap];
+    [app.buttons[@"\u94c5"] tap];
+    
+    XCUIElement *element = [[element6 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:2];
+    [[[element childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:1] tap];
+    
+    XCUIElement *image2 = [app.scrollViews childrenMatchingType:XCUIElementTypeImage].element;
+    XCUIElement *element2 = [[image2 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:1];
+    [element2 swipeDown];
+    [element2 swipeDown];
+    [app.buttons[@"\u94a2"] tap];
+    [element2 swipeDown];
+    [element2 swipeDown];
+    [button2 tap];
     
     XCUIElement *element3 = [[image2 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:0];
-    [element3 swipeDown];
     [element3 swipeRight];
-    [button3 tap];
-    [button2 tap];
-    [button2 tap];
+    [element3 swipeDown];
     
-    XCUIElement *button4 = app.buttons[@"\u88c1"];
-    [button4 tap];
-    [button4 tap];
-    [button4 tap];
-    [app.buttons[@"\u88c1\u526a"] tap];
-    [button4 tap];
+    XCUIElement *button5 = [[element childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:0];
+    [button5 tap];
+    [button5 tap];
     
-    XCUIElement *element5 = [[element6 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:0];
-    [[element5 childrenMatchingType:XCUIElementTypeButton].element tap];
+    XCUIElement *button6 = [[element childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:1];
+    [button6 tap];
+    [button6 tap];
+    [button tap];
+    
+    XCUIElement *button7 = [[element childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:2];
+    [button7 tap];
+    [button7 tap];
+    [button7 tap];
+    [button7 tap];
+    [button7 tap];
+    
+    XCUIElement *button8 = [[element childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:3];
+    [button8 tap];
+    [button8 tap];
+    [button8 tap];
+    [button8 tap];
+    [button8 tap];
+    [button4 tap];
+    [app.buttons[@"\u6dfb\u52a0"] tap];
+    
+    XCUIElement *aKey = app/*@START_MENU_TOKEN@*/.keys[@"A"]/*[[".keyboards.keys[@\"A\"]",".keys[@\"A\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/;
+    [aKey tap];
+    
+    XCUIElement *bKey = app/*@START_MENU_TOKEN@*/.keys[@"b"]/*[[".keyboards.keys[@\"b\"]",".keys[@\"b\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/;
+    [bKey tap];
+    
+    XCUIElement *cKey = app/*@START_MENU_TOKEN@*/.keys[@"c"]/*[[".keyboards.keys[@\"c\"]",".keys[@\"c\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/;
+    [cKey tap];
+    
+    XCUIElement *dKey = app/*@START_MENU_TOKEN@*/.keys[@"d"]/*[[".keyboards.keys[@\"d\"]",".keys[@\"d\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/;
+    [dKey tap];
+    
+    XCUIElement *eKey = app/*@START_MENU_TOKEN@*/.keys[@"e"]/*[[".keyboards.keys[@\"e\"]",".keys[@\"e\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/;
+    [eKey tap];
+    
+    XCUIElement *fKey = app/*@START_MENU_TOKEN@*/.keys[@"f"]/*[[".keyboards.keys[@\"f\"]",".keys[@\"f\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/;
+    [fKey tap];
+    
+    XCUIElement *gKey = app/*@START_MENU_TOKEN@*/.keys[@"g"]/*[[".keyboards.keys[@\"g\"]",".keys[@\"g\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/;
+    [gKey tap];
+    
+//    XCUIElement *element4 = [[[window.scrollViews childrenMatchingType:XCUIElementTypeImage].element childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:2];
+//    
+//    XCUIElement *textView = [[[[[app.scrollViews childrenMatchingType:XCUIElementTypeImage].element childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:2] childrenMatchingType:XCUIElementTypeOther].element childrenMatchingType:XCUIElementTypeTextView].element;
+//    [textView swipeUp];
+//    [element4 tap];
+    XCUIElement *button9 = [[[element6 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeButton].element;
+    [button9 tap];
     [image tap];
-    [button tap];
     
-    XCUIElement *button5 = [[element4 childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:0];
-    [button5 tap];
-    [button4 tap];
+    [image2 tap];
+    sleep(1);
+    [image2 tap];
     
-    XCUIElement *element7 = [[element6 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:3];
-    XCUIElement *button6 = [[element7 childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:0];
-    [button6 tap];
     [button3 tap];
-    [button5 tap];
-    [button5 tap];
-    [button5 tap];
-    [button5 tap];
-    [button2 tap];
-    [button5 tap];
-    [button5 tap];
+   
+    [app.buttons[@"\u88c1\u526a"] tap];
     
-    XCUIElement *button7 = [[element4 childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:1];
-    [button7 tap];
-    [button7 tap];
-    [button7 tap];
-    [button tap];
-    [button5 tap];
-    [button5 tap];
-    [button5 tap];
-    [button5 tap];
-    [button5 tap];
-    [button5 tap];
-    [button7 tap];
-    [button5 tap];
-    [button3 tap];
-    [button7 tap];
-    [button7 tap];
-    [button5 tap];
-    [button5 tap];
-    [button4 tap];
-    [[[element7 childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:1] tap];
-    [button6 tap];
-    [[[element5 childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:0] tap];
-    sleep(2);
+    XCUIElement *element5 = [[element6 childrenMatchingType:XCUIElementTypeOther] elementBoundByIndex:3];
+    [[[element5 childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:1] tap];
+    [[[element5 childrenMatchingType:XCUIElementTypeButton] elementBoundByIndex:2] tap];
+    
+    
+    [button9 tap];
+    
 }
 
 //- (void)testLaunchPerformance {
