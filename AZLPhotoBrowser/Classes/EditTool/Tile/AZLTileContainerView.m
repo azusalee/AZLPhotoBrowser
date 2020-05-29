@@ -59,7 +59,6 @@
 
 - (void)updateScaleWithBounds:(CGRect)bounds {
     CGFloat scaleW = bounds.size.width/self.originBounds.size.width;
-    //CGFloat scaleH = newFrame.size.height/self.originBounds.size.height;
     self.transform = CGAffineTransformMakeScale(scaleW, scaleW);
 }
 
@@ -75,16 +74,13 @@
     for (AZLTileView *subView in self.subviews) {
         if (cropRecord.lastCropRect.size.width > 0) {
             [subView addTranslate:CGPointMake((cropRecord.imageCropRect.origin.x-cropRecord.lastCropRect.origin.x)*scale, (cropRecord.imageCropRect.origin.y-cropRecord.lastCropRect.origin.y)*scale)];
-//            subView.frame = CGRectMake((cropRecord.imageCropRect.origin.x-cropRecord.lastCropRect.origin.x)*scale+subView.frame.origin.x, (cropRecord.imageCropRect.origin.y-cropRecord.lastCropRect.origin.y)*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
         }else{
             [subView addTranslate:CGPointMake(cropRecord.imageCropRect.origin.x*scale, cropRecord.imageCropRect.origin.y*scale)];
-//            subView.frame = CGRectMake(cropRecord.imageCropRect.origin.x*scale+subView.frame.origin.x, cropRecord.imageCropRect.origin.y*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
         }
     }
 }
 
 - (void)redoCropRecord:(AZLCropRecord*)cropRecord{
-    
     self.transform = CGAffineTransformIdentity;
     CGFloat scale = 1;
     if (cropRecord.lastCropRect.size.width <= 0) {
@@ -97,10 +93,8 @@
     for (AZLTileView *subView in self.subviews) {
         if (cropRecord.lastCropRect.size.width > 0) {
             [subView addTranslate:CGPointMake((-cropRecord.imageCropRect.origin.x+cropRecord.lastCropRect.origin.x)*scale, (-cropRecord.imageCropRect.origin.y+cropRecord.lastCropRect.origin.y)*scale)];
-//            subView.frame = CGRectMake((-cropRecord.imageCropRect.origin.x+cropRecord.lastCropRect.origin.x)*scale+subView.frame.origin.x, (-cropRecord.imageCropRect.origin.y+cropRecord.lastCropRect.origin.y)*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
         }else{
             [subView addTranslate:CGPointMake(-cropRecord.imageCropRect.origin.x*scale, -cropRecord.imageCropRect.origin.y*scale)];
-//            subView.frame = CGRectMake(-cropRecord.imageCropRect.origin.x*scale+subView.frame.origin.x, -cropRecord.imageCropRect.origin.y*scale+subView.frame.origin.y, subView.frame.size.width, subView.frame.size.height);
         }
     }
 }
@@ -141,29 +135,5 @@
 - (void)tileViewDidEndEditing:(AZLTileView*)tileView{
     [self.delegate tileContainerViewDidEndEditing:self];
 }
-
-//- (void)dealloc{
-//    //[self.superview removeObserver:self forKeyPath:@"bounds"];
-//}
-
-//- (void)layoutSubviews{
-//    [super layoutSubviews];
-//    //CGFloat scale = self.superview.bounds.size.width/self.originBounds.size.width;
-//    //self.transform = CGAffineTransformMakeScale(scale, scale);
-////    for (UIView *subView in self.subviews) {
-////        if ([subView isKindOfClass:[AZLTileView class]]) {
-////            AZLTileView *tileView = (AZLTileView*)subView;
-////            if (tileView.superOriginBounds.size.width > 0) {
-////                CGFloat scale = self.bounds.size.width/tileView.superOriginBounds.size.width;
-////                [tileView updateFrameWithScale:scale];
-////            }
-////        }
-////    }
-//}
-
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-//    return YES;
-//}
-
 
 @end

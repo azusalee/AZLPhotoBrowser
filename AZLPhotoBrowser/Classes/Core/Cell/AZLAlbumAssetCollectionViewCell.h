@@ -21,12 +21,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 图片
 @property (nonatomic, strong) UIImageView *imageView;
+/// 蒙版view
+@property (nonatomic, strong) UIView *coverView;
 /// 类型label
 @property (nonatomic, strong) UILabel *extLabel;
 /// 选择的按钮
 @property (nonatomic, strong) UIButton *selectButton;
 /// 所在的index
 @property (nonatomic, assign) NSInteger index;
+/// 代理
 @property (nonatomic, weak) id<AZLAlbumAssetCollectionViewCellDelegate> delegate;
 
 @end

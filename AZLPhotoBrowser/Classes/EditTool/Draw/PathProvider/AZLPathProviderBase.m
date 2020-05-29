@@ -17,14 +17,12 @@
 }
 
 - (void)touchBeganWithPoint:(CGPoint)point{
-    
-}
-- (void)touchMoveWithPoint:(CGPoint)point{
-    
-}
-- (void)touchEndWithPoint:(CGPoint)point{
-    
 }
 
+- (void)touchMoveWithPoint:(CGPoint)point{
+}
+
+- (void)touchEndWithPoint:(CGPoint)point{
+}
 
 @end

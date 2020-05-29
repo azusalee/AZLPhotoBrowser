@@ -19,19 +19,22 @@
 @property (nonatomic, strong) NSMutableArray<AZLAlbumModel*> *albumArray;
 @property (nonatomic, strong) NSMutableArray<AZLPhotoBrowserModel*> *selectPhotoArray;
 
+/// 照片的collection
 @property (nonatomic, strong) UICollectionView *photoCollectionView;
 /// 当前选择的相册索引
 @property (nonatomic, assign) NSInteger selectAlbumIndex;
-
+/// 每个cell的宽
 @property (nonatomic, assign) CGFloat cellWidth;
-
+/// 顶部view
 @property (nonatomic, strong) UIView *customNavView;
 /// 相册列表
 @property (nonatomic, strong) UITableView *albumTableView;
 
+/// 顶部标题view
 @property (nonatomic, strong) UIView *titleView;
 @property (nonatomic, strong) UILabel *titleLabel;
 
+/// 底部view
 @property (nonatomic, strong) UIView *bottomView;
 @property (nonatomic, strong) UIButton *bottomDoneButton;
 
@@ -222,6 +225,7 @@
     layout.sectionInset = UIEdgeInsetsZero;
     layout.itemSize = CGSizeMake(cellWidth, cellWidth);
     
+    // 照片collection
     self.photoCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, navViewHeight, self.view.bounds.size.width, self.view.bounds.size.height-navViewHeight-bottomViewHeight) collectionViewLayout:layout];
     self.photoCollectionView.contentInset = UIEdgeInsetsZero;
     self.photoCollectionView.backgroundColor = [UIColor clearColor];
@@ -233,7 +237,7 @@
     [self.photoCollectionView registerClass:[AZLAlbumAssetCollectionViewCell class] forCellWithReuseIdentifier:@"AZLAlbumAssetCollectionViewCell"];
     [self.view addSubview:self.photoCollectionView];
     
-    
+    // 相册列表
     self.albumTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, navViewHeight, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-navViewHeight-bottomViewHeight) style:UITableViewStylePlain];
     self.albumTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.albumTableView.delegate = self;
@@ -247,7 +251,11 @@
 }
 
 - (void)leftBarItemDidTap:(id)sender{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.navigationController) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)doneDidTap:(id)sender{
@@ -367,18 +375,28 @@
         [cell.selectButton setTitle:[NSString stringWithFormat:@"%ld", (long)selectIndex] forState:UIControlStateNormal];
         cell.selectButton.layer.borderColor = nil;
         cell.selectButton.layer.borderWidth = 0;
+        cell.coverView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     }else{
         cell.selectButton.backgroundColor = [UIColor clearColor];
         [cell.selectButton setTitle:@"" forState:UIControlStateNormal];
         cell.selectButton.layer.borderColor = [UIColor whiteColor].CGColor;
         cell.selectButton.layer.borderWidth = 1;
+        if (self.selectPhotoArray.count == self.maxCount) {
+            cell.coverView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.5];
+        }else{
+            cell.coverView.backgroundColor = [UIColor clearColor];
+        }
     }
     
     if (photoModel.smallEditImage != nil) {
         cell.imageView.image = photoModel.smallEditImage;
+    }else if (photoModel.smallImage){
+        cell.imageView.image = photoModel.smallImage;
     }else{
         __weak AZLAlbumAssetCollectionViewCell *weakCell = cell;
+        __weak AZLPhotoBrowserModel *weakModel = photoModel;
         [[PHImageManager defaultManager] requestImageForAsset:photoModel.asset targetSize:CGSizeMake(self.cellWidth, self.cellWidth) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            weakModel.smallImage = result;
             weakCell.imageView.image = result;
         }];
     }
@@ -467,7 +485,11 @@
     }
     if ([self.selectPhotoArray containsObject:photoModel]) {
         [self.selectPhotoArray removeObject:photoModel];
-        [self.photoCollectionView reloadItemsAtIndexPaths:indexPathArray];
+        if (self.selectPhotoArray.count == self.maxCount-1) {
+            [self.photoCollectionView reloadData];
+        }else{
+            [self.photoCollectionView reloadItemsAtIndexPaths:indexPathArray];
+        }
     }else{
         if (self.selectPhotoArray.count == self.maxCount) {
             // 大於最大選擇數
@@ -485,28 +507,26 @@
             return;
         }
         [self.selectPhotoArray addObject:photoModel];
-        [indexPathArray addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-        [self.photoCollectionView reloadItemsAtIndexPaths:indexPathArray];
+        
+        if (self.selectPhotoArray.count == self.maxCount) {
+            [self.photoCollectionView reloadData];
+        }else{
+            [indexPathArray addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+            [self.photoCollectionView reloadItemsAtIndexPaths:indexPathArray];
+        }
+        
     }
     [self updateDoneButton];
 }
 
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
+    // 内存警告，清理图片缓存
     AZLAlbumModel *album = self.albumArray[0];
     for (AZLPhotoBrowserModel *photoModel in album.photoModelArray) {
         photoModel.image = nil;
+        photoModel.smallImage = nil;
     }
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

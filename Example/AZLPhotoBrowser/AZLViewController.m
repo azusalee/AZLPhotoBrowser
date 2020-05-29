@@ -29,7 +29,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
 //    UIImage *image = [UIImage imageNamed:@"undo"];
 //    NSData *imageData = UIImagePNGRepresentation(image);
 //    NSString *imageString = [imageData base64EncodedStringWithOptions:0];
@@ -108,8 +107,6 @@
         self.editImageView = imageView;
     }
     
-    
-    //[self setup];
 }
 
 - (void)viewDidAppear:(BOOL)animated{

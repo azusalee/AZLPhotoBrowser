@@ -175,17 +175,17 @@
     self.undoButton.enabled = undoEnable;
 }
 
-- (BOOL)undoEnable{
-    return self.undoButton.enabled;
-}
+//- (BOOL)undoEnable{
+//    return self.undoButton.enabled;
+//}
 
 - (void)setRedoEnable:(BOOL)redoEnable{
     self.redoButton.enabled = redoEnable;
 }
 
-- (BOOL)redoEnable{
-    return self.redoButton.enabled;
-}
+//- (BOOL)redoEnable{
+//    return self.redoButton.enabled;
+//}
 
 - (void)setEditType:(AZLEditType)editType{
     _editType = editType;
@@ -234,8 +234,6 @@
             self.addButton.hidden = NO;
             
             break;
-        default:
-            break;
     }
 }
 
@@ -249,8 +247,6 @@
             self.editSubTypeIndicateView.center = self.penButton.center;
             break;
             
-        default:
-            break;
     }
 }
 
@@ -317,6 +313,7 @@
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
+    // 重写hitTest，使范围外的button可以相应
     if (self.isHidden == YES || self.userInteractionEnabled == NO) {
         return nil;
     }
@@ -338,6 +335,5 @@
     }
     return [super hitTest:point withEvent:event];
 }
-
 
 @end

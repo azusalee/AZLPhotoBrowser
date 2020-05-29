@@ -29,12 +29,14 @@
 }
 
 - (void)touchBeganWithPoint:(CGPoint)point{
+    [super touchBeganWithPoint:point];
     self.path = [[UIBezierPath alloc] init];
     self.path.lineWidth = self.lineWidth;
     [self.path moveToPoint:point];
 }
 
 - (void)touchMoveWithPoint:(CGPoint)point{
+    [super touchMoveWithPoint:point];
     [self.path addLineToPoint:point];
     [self.path moveToPoint:point];
     
@@ -42,6 +44,7 @@
 }
 
 - (void)touchEndWithPoint:(CGPoint)point{
+    [super touchEndWithPoint:point];
     [self.delegate pathProvider:self didEndPath:self.path];
 }
 

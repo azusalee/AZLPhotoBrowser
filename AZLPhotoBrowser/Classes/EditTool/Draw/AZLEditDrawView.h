@@ -41,8 +41,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray<AZLEditRecord*>*)getEditRecords;
 /// 獲取可重做的編輯記錄
 - (NSArray<AZLEditRecord*>*)getRedoRecords;
-
+/// 撤回裁剪记录
 - (void)undoCropRecord:(AZLCropRecord*)cropRecord;
+/// 重做裁剪记录
 - (void)redoCropRecord:(AZLCropRecord*)cropRecord;
 
 @end

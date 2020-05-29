@@ -8,7 +8,7 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
+/// 裁剪范围选择view
 @interface AZLEditCropView : UIView
 
 

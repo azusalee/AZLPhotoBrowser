@@ -6,7 +6,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AZLEditRecord.h"
 #import "AZLEditDrawView.h"
 
 NS_ASSUME_NONNULL_BEGIN

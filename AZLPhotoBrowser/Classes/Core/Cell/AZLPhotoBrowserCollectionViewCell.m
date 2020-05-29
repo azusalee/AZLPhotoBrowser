@@ -7,9 +7,6 @@
 //
 
 #import "AZLPhotoBrowserCollectionViewCell.h"
-#import <AZLExtend/AZLExtend.h>
-#import <SDWebImage/SDImageCache.h>
-#import <Photos/Photos.h>
 
 @interface AZLPhotoBrowserCollectionViewCell()
 
@@ -28,69 +25,15 @@
     __weak AZLPhotoBrowserCollectionViewCell *weakSelf = self;
     self.browserView = [[AZLPhotoBrowserView alloc] initWithFrame:self.contentView.bounds];
     self.browserView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    // 单击事件
     [self.browserView setSingleTapBlock:^{
         [weakSelf.delegate azlPhotoBrowserCollectionViewCellDidTap:weakSelf];
     }];
+    // 长按事件
     [self.browserView setLongPressBlock:^{
-        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        [alertVC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            
-        }]];
-        [alertVC addAction:[UIAlertAction actionWithTitle:@"保存到相冊" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [weakSelf saveImage];
-        }]];
-        [alertVC azl_presentSelf];
+        [weakSelf.delegate azlPhotoBrowserCollectionViewCellDidLongPress:weakSelf];
     }];
     [self.contentView addSubview:self.browserView];
 }
-
-
-- (void)saveImage{
-    if (self.originUrl == nil) {
-        return;
-    }
-    // 1. 获取相片库对象
-    PHPhotoLibrary *library = [PHPhotoLibrary sharedPhotoLibrary];
-    
-    // 2. 调用changeBlock
-    [library performChanges:^{
-        
-//        // 2.1 创建一个相册变动请求
-//        PHAssetCollectionChangeRequest *collectionRequest;
-//        
-//        // 2.2 取出指定名称的相册
-//        PHAssetCollection *assetCollection = [self getCurrentPhotoCollectionWithTitle:collectionName];
-//        
-//        // 2.3 判断相册是否存在
-//        if (assetCollection) { // 如果存在就使用当前的相册创建相册请求
-//            collectionRequest = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:assetCollection];
-//        } else { // 如果不存在, 就创建一个新的相册请求
-//            collectionRequest = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:collectionName];
-//        }
-        
-        // 2.4 根据传入的相片, 创建相片变动请求
-        
-        NSData *data = [[SDImageCache sharedImageCache] diskImageDataForKey:self.originUrl];
-        PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-        [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:data options:options];
-        
-        
-        // 2.4 创建一个占位对象
-//        PHObjectPlaceholder *placeholder = [assetRequest placeholderForCreatedAsset];
-//        
-//        // 2.5 将占位对象添加到相册请求中
-//        [collectionRequest addAssets:@[placeholder]];
-        
-    } completionHandler:^(BOOL success, NSError * _Nullable error) {
-        
-        // 3. 判断是否出错, 如果报错, 声明保存不成功
-//        if (error) {
-//            [SVProgressHUD showErrorWithStatus:@"保存失败"];
-//        } else {
-//            [SVProgressHUD showSuccessWithStatus:@"保存成功"];
-//        }
-    }];
-}
-
 
 @end

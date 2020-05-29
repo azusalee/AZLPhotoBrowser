@@ -14,8 +14,10 @@ typedef void(^AZLPhotoBrowserEditCompleteBlock)(NSArray<AZLPhotoBrowserModel*> *
 /// 图片浏览选择编辑页
 @interface AZLPhotoBrowserEditViewController : AZLPhotoBrowserViewController
 
+/// 完成回调
 @property (nonatomic, copy) AZLPhotoBrowserEditCompleteBlock completeBlock;
 
+/// 添加选择图片图片
 - (void)addSelectPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray;
 
 @end

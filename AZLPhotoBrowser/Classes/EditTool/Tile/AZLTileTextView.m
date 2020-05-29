@@ -10,6 +10,7 @@
 
 @interface AZLTileTextView()<UITextViewDelegate>
 
+@property (nonatomic, strong) UITextView *textView;
 
 @end
 

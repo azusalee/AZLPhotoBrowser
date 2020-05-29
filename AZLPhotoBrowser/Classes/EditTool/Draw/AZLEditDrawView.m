@@ -37,11 +37,6 @@
 }
 
 - (void)applyBounds:(CGRect)bounds {
-//    if (self.frame.size.width != bounds.size.width) {
-//        CGFloat scale = bounds.size.width/(self.frame.size.width/self.lastTransScale);
-//        self.lastTransScale = scale;
-//        self.affineTransform = CGAffineTransformMakeScale(scale, scale);
-//    }
     if (self.frame.size.width == bounds.size.width) {
         return;
     }
@@ -50,7 +45,6 @@
     self.lineWidth = self.record.path.lineWidth;
     self.path = self.record.path.CGPath;
     self.frame = bounds;
-    //NSLog(@"%0.2f, %0.2f", self.frame.size.width, self.frame.size.height);
 }
 
 @end
@@ -61,7 +55,6 @@
 @property (nonatomic, strong) NSMutableArray<AZLEditRecord*> *redoRecordArray;
 @property (nonatomic, strong) AZLEditRecord *tmpEditRecord;
 
-//@property (nonatomic, strong) NSMutableArray<AZLEditShapeLayer*> *shapeLayerArray;
 @property (nonatomic, strong) AZLEditShapeLayer *tmpShapeLayer;
 
 @end
@@ -85,7 +78,6 @@
     self.multipleTouchEnabled = YES;
     self.editRecordArray = [[NSMutableArray alloc] init];
     self.redoRecordArray = [[NSMutableArray alloc] init];
-    //self.shapeLayerArray = [[NSMutableArray alloc] init];
     self.pathProvider = [[AZLPathProviderPencil alloc] init];
 }
 
@@ -100,17 +92,6 @@
     }
     [self.editRecordArray addObjectsFromArray:records];
     [self setNeedsDisplay];
-//    for (AZLEditRecord *record in records) {
-//        [self addShapeLayerWithRecord:record];
-//    }
-}
-
-- (void)addShapeLayerWithRecord:(AZLEditRecord*)record {
-//    AZLEditShapeLayer *shapeLayer = [[AZLEditShapeLayer alloc] init];
-//    shapeLayer.record = record;
-//    [shapeLayer applyBounds:self.bounds];
-//    [self.layer addSublayer:shapeLayer];
-//    [self.shapeLayerArray addObject:shapeLayer];
 }
 
 - (void)removeLastRecord{
@@ -118,10 +99,6 @@
         AZLEditRecord *lastRecord = [self.editRecordArray lastObject];
         [self.editRecordArray removeLastObject];
         [self.redoRecordArray addObject:lastRecord];
-        
-//        CAShapeLayer *lastShapeLayer = [self.shapeLayerArray lastObject];
-//        [lastShapeLayer removeFromSuperlayer];
-//        [self.shapeLayerArray removeLastObject];
         
         [self setNeedsDisplay];
         [self.delegate editDrawViewDidChangePath:self];
@@ -134,8 +111,6 @@
         [self.redoRecordArray removeLastObject];
         [self.editRecordArray addObject:redoRecord];
         
-        //[self addShapeLayerWithRecord:redoRecord];
-        
         [self setNeedsDisplay];
         [self.delegate editDrawViewDidChangePath:self];
     }
@@ -144,7 +119,6 @@
 - (void)pathDidFinish{
     [self.editRecordArray addObject:self.tmpEditRecord];
     [self.redoRecordArray removeAllObjects];
-    //[self.shapeLayerArray addObject:self.tmpShapeLayer];
     [self.tmpShapeLayer removeFromSuperlayer];
     self.tmpShapeLayer = nil;
     self.tmpEditRecord = nil;
@@ -234,13 +208,6 @@
     [self pathDidFinish];
 }
 
-//- (void)layoutSubviews{
-//    [super layoutSubviews];
-//    for (AZLEditShapeLayer *shapeLayer in self.shapeLayerArray) {
-//        [shapeLayer applyBounds:self.bounds];
-//    }
-//}
-
 - (void)drawRect:(CGRect)rect{
     [super drawRect:rect];
     
@@ -248,10 +215,6 @@
     for (AZLEditRecord *editRecord in self.editRecordArray) {
         [editRecord renderWithBounds:nowBounds];
     }
-    
-//    if (self.tmpEditRecord) {
-//        [self.tmpEditRecord renderWithBounds:nowBounds];
-//    }
     
 }
 

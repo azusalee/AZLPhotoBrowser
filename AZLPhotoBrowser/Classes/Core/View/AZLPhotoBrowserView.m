@@ -206,6 +206,7 @@
     }];
 }
 
+/// 单击
 - (void)singleTap:(UITapGestureRecognizer*)gesture{
     if (gesture.state == UIGestureRecognizerStateEnded) {
         if (self.singleTapBlock != nil) {
@@ -214,6 +215,7 @@
     }
 }
 
+/// 双击
 - (void)doubleTap:(UITapGestureRecognizer *)recognizer {
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         if (self.imageWidth == 0 || self.imageHeight == 0) {
@@ -228,6 +230,7 @@
     }
 }
 
+/// pinch放大缩小
 - (void)imagePinch:(UIPinchGestureRecognizer *)recognizer {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         self.startRect = self.imageView.bounds;
@@ -245,6 +248,7 @@
     }
 }
 
+/// 长按
 - (void)longPress:(UILongPressGestureRecognizer *)recognizer{
     if (recognizer.state == UIGestureRecognizerStateBegan){
         if (self.imageView.image) {

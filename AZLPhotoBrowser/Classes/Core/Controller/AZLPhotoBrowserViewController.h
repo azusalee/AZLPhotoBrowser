@@ -18,9 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSInteger showingIndex;
 
 /// 简易显示方法
-+ (void)showWithPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray index:(NSInteger)index;
++ (void)showWithImages:(NSArray<UIImage*>*)imageArray index:(NSInteger)index;
++ (void)showWithPhotoModels:(NSArray<AZLPhotoBrowserModel*>*)photoArray index:(NSInteger)index;
 /// 添加图片模型数组
-- (void)addPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray;
+- (void)addPhotoModels:(NSArray<AZLPhotoBrowserModel*>*)photoArray;
 /// 获取当前显示的model
 - (AZLPhotoBrowserModel *)getCurrentPhotoModel;
 

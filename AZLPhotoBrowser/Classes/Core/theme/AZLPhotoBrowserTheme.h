@@ -61,6 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *photoAuthAlertContentString;
 // 去打开
 @property (nonatomic, strong) NSString *photoAuthOpenString;
+// 保存到相冊
+@property (nonatomic, strong) NSString *photoSaveImageString;
 
 // 編輯
 @property (nonatomic, strong) NSString *editString;

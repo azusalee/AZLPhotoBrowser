@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AZLTileTextView : AZLTileView
 
-@property (nonatomic, strong) UITextView *textView;
+@property (nonatomic, readonly) UITextView *textView;
 
 @end
 

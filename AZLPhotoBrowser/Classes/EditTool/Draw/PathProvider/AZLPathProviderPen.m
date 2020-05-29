@@ -230,7 +230,6 @@ typedef struct
 @property (nonatomic, strong) AZLWeightPoint *point3;
 
 @property (nonatomic, assign) NSInteger nextPointIndex;
-@property (nonatomic, assign) CGFloat lineWeight;
 
 @end
 
@@ -254,6 +253,7 @@ typedef struct
 }
 
 - (void)touchBeganWithPoint:(CGPoint)point{
+    [super touchBeganWithPoint:point];
     self.path = [[UIBezierPath alloc] init];
     self.tmpPath = [[UIBezierPath alloc] init];
     AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
@@ -271,7 +271,7 @@ typedef struct
 }
 
 - (void)touchMoveWithPoint:(CGPoint)point{
-    
+    [super touchMoveWithPoint:point];
     AZLWeightPoint *previousPoint;
     if (self.nextPointIndex == 1) {
         previousPoint = self.point0;
@@ -352,6 +352,7 @@ typedef struct
 }
 
 - (void)touchEndWithPoint:(CGPoint)point{
+    [super touchEndWithPoint:point];
     //鬆手的時候為完成這次畫線，把tmpPath的線路賦值到path里
     [self.path removeAllPoints];
     [self.path appendPath:self.tmpPath];

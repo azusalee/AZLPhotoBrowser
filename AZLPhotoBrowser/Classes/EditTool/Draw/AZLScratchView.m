@@ -6,11 +6,8 @@
 //
 
 #import "AZLScratchView.h"
-#import "AZLPathProviderPen.h"
 
 @interface AZLScratchView()
-
-
 
 @end
 
@@ -32,15 +29,8 @@
     self.drawView.backgroundColor = [UIColor clearColor];
     self.drawView.pathColor = [UIColor whiteColor];
     self.drawView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    //[self addSubview:self.drawView];
     self.maskView = self.drawView;
 }
-
-//- (void)layoutSubviews{
-//    [super layoutSubviews];
-//    self.drawView.frame = self.bounds;
-//    //self.maskView = self.drawView;
-//}
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [self.drawView touchesBegan:touches withEvent:event];
@@ -72,13 +62,5 @@
 - (void)dealloc{
     [self removeObserver:self forKeyPath:@"frame"];
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

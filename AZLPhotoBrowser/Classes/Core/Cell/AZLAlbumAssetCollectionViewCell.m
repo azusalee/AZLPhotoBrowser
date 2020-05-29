@@ -24,6 +24,10 @@
     self.imageView.clipsToBounds = YES;
     [self.contentView addSubview:self.imageView];
     
+    self.coverView = [[UIView alloc] initWithFrame:self.contentView.bounds];
+    self.coverView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.contentView addSubview:self.coverView];
+    
     self.extLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.bounds.size.height-20, 40, 20)];
     self.extLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     self.extLabel.textAlignment = NSTextAlignmentCenter;
@@ -41,6 +45,7 @@
     [self.contentView addSubview:self.selectButton];
 }
 
+/// 右上角选择点击
 - (void)selectButtonDidTap:(UIButton*)button {
     [self.delegate albumAssetCollectionViewCell:self didSelectAtIndex:self.index];
 }

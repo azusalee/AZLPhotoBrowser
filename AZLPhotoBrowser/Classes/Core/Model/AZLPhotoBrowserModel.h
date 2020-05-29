@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class PHAsset, AZLEditRecord, AZLCropRecord;
 @interface AZLPhotoBrowserModel : NSObject
 
+/// UIImage對象
+@property (nonatomic, strong, nullable) UIImage *image;
 /// 圖片寬(按dp算)，如果不設置，可能顯示上有問題
 @property (nonatomic, assign) CGFloat width;
 /// 圖片高(按dp算)，如果不設置，可能顯示上有問題
@@ -32,9 +34,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) PHAsset *asset;
 /// 圖片數據
 @property (nonatomic, strong, nullable) NSData *imageData;
-/// UIImage對象
-@property (nonatomic, strong, nullable) UIImage *image;
+/// 小图
+@property (nonatomic, strong, nullable) UIImage *smallImage;
 
+// 以下为编辑相关属性
 /// 是否原圖
 @property (nonatomic, assign) BOOL isOrigin;
 
@@ -57,7 +60,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)requestImage:(void (^)(UIImage *_Nullable image))resultHandler;
 /// 獲取圖片數據
 - (void)requestImageData:(void (^)(NSData *_Nullable imageData))resultHandler;
-
 
 @end
 

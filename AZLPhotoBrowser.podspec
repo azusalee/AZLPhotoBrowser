@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'AZLPhotoBrowser'
-  s.version          = '0.6.6'
+  s.version          = '0.7.0'
   s.summary          = '简单的图片浏览控件'
 
 # This description is used to generate tags and improve search results.

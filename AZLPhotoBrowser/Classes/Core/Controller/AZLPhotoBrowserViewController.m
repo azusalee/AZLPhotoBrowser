@@ -10,6 +10,8 @@
 #import "AZLPhotoBrowserCollectionViewCell.h"
 #import <SDWebImage/SDWebImage.h>
 #import <AZLExtend/AZLExtend.h>
+#import <Photos/Photos.h>
+#import "AZLPhotoBrowserManager.h"
 
 /// 自定义过场动画
 @interface AZLPhotoBrowserTransition : NSObject<UIViewControllerAnimatedTransitioning>
@@ -23,13 +25,12 @@
 - (NSTimeInterval)duration{
     return 0.275;
 }
-
+// 出现动画
 - (void)presentTransitionWithContext:(id <UIViewControllerContextTransitioning>)transitionContext {
     AZLPhotoBrowserViewController *controller = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     AZLPhotoBrowserModel *model = [controller getCurrentPhotoModel];
     CGRect rect = model.fromRect;
     if (rect.size.width != 0 && rect.size.height != 0) {
-        
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:rect];
         imageView.clipsToBounds = YES;
         imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -57,7 +58,6 @@
             [imageView removeFromSuperview];
             [transitionContext completeTransition:YES];
         }];
-        
     }else{
         controller.view.alpha = 0;
         [UIView animateWithDuration:[self duration] animations:^{
@@ -67,9 +67,8 @@
         }];
         [transitionContext.containerView addSubview:controller.view];
     }
-    
 }
-
+// 消失动画
 - (void)dismissTransitionWithContext:(id <UIViewControllerContextTransitioning>)transitionContext {
     AZLPhotoBrowserViewController *controller = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     AZLPhotoBrowserModel *model = [controller getCurrentPhotoModel];
@@ -103,14 +102,13 @@
         }];
         [transitionContext.containerView addSubview:controller.view];
     }
-    
 }
 
 - (NSTimeInterval)transitionDuration:(nullable id <UIViewControllerContextTransitioning>)transitionContext;
 {
     return [self duration];
 }
-// This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
+
 - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
     if (self.isPresent) {
         [self presentTransitionWithContext:transitionContext];
@@ -130,7 +128,19 @@
 
 @implementation AZLPhotoBrowserViewController
 
-+ (void)showWithPhotoModels:(NSArray<AZLPhotoBrowserModel*> *)photoArray index:(NSInteger)index{
++ (void)showWithImages:(NSArray<UIImage*>*)imageArray index:(NSInteger)index{
+    NSMutableArray *photoArray = [[NSMutableArray alloc] init];
+    for (UIImage *image in imageArray) {
+        AZLPhotoBrowserModel *model = [[AZLPhotoBrowserModel alloc] init];
+        model.width = image.size.width;
+        model.height = image.size.height;
+        model.image = image;
+        [photoArray addObject:model];
+    }
+    [self showWithPhotoModels:photoArray.copy index:index];
+}
+
++ (void)showWithPhotoModels:(NSArray<AZLPhotoBrowserModel*>*)photoArray index:(NSInteger)index{
     AZLPhotoBrowserViewController *controller = [[AZLPhotoBrowserViewController alloc] init];
     controller.showingIndex = index;
     [controller addPhotoModels:photoArray];
@@ -155,7 +165,7 @@
     [self.photoCollectionView reloadData];
 }
 
-- (void)viewDidLoad {
+- (void)viewDidLoad{
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.frame = [UIScreen mainScreen].bounds;
@@ -204,18 +214,14 @@
     }
 }
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
 
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     AZLPhotoBrowserCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"AZLPhotoBrowserCollectionViewCell" forIndexPath:indexPath];
     cell.delegate = self;
     AZLPhotoBrowserModel *model = self.dataArray[indexPath.row];
-    cell.originUrl = model.originUrlString;
-    //[cell.browserView.scrollView setZoomScale:1];
     [cell.browserView setImageWidth:model.width height:model.height];
     
     if (model.editImage != nil) {
@@ -244,31 +250,88 @@
     }
 }
 
+- (void)azlPhotoBrowserCollectionViewCellDidLongPress:(AZLPhotoBrowserCollectionViewCell *)cell{
+    NSIndexPath *indexPath = [self.photoCollectionView indexPathForCell:cell];
+    AZLPhotoBrowserModel *model = self.dataArray[indexPath.row];
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    [alertVC addAction:[UIAlertAction actionWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.cancelString style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }]];
+    [alertVC addAction:[UIAlertAction actionWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.photoSaveImageString style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        if (model.originUrlString.length > 0) {
+            [self saveImageWithUrl:model.originUrlString];
+        }else{
+            [self saveImageWithImageData:
+            UIImagePNGRepresentation(cell.browserView.imageView.image)];
+        }
+    }]];
+    [alertVC azl_presentSelf];
+}
+
+- (void)saveImageWithImageData:(NSData*)data{
+    // 1. 获取相片库对象
+    PHPhotoLibrary *library = [PHPhotoLibrary sharedPhotoLibrary];
+    
+    // 2. 调用changeBlock
+    [library performChanges:^{
+        
+        //        // 2.1 创建一个相册变动请求
+        //        PHAssetCollectionChangeRequest *collectionRequest;
+        //        
+        //        // 2.2 取出指定名称的相册
+        //        PHAssetCollection *assetCollection = [self getCurrentPhotoCollectionWithTitle:collectionName];
+        //        
+        //        // 2.3 判断相册是否存在
+        //        if (assetCollection) { // 如果存在就使用当前的相册创建相册请求
+        //            collectionRequest = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:assetCollection];
+        //        } else { // 如果不存在, 就创建一个新的相册请求
+        //            collectionRequest = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:collectionName];
+        //        }
+        
+        // 2.4 根据传入的相片, 创建相片变动请求
+        
+        
+        PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
+        [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:data options:options];
+        
+        
+        // 2.4 创建一个占位对象
+        //        PHObjectPlaceholder *placeholder = [assetRequest placeholderForCreatedAsset];
+        //        
+        //        // 2.5 将占位对象添加到相册请求中
+        //        [collectionRequest addAssets:@[placeholder]];
+        
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        
+        // 3. 判断是否出错, 如果报错, 声明保存不成功
+        //        if (error) {
+        //            [SVProgressHUD showErrorWithStatus:@"保存失败"];
+        //        } else {
+        //            [SVProgressHUD showSuccessWithStatus:@"保存成功"];
+        //        }
+    }];
+}
+
+- (void)saveImageWithUrl:(NSString*)imageUrl{
+    NSData *data = [[SDImageCache sharedImageCache] diskImageDataForKey:imageUrl];
+    [self saveImageWithImageData:data];
+}
+
 #pragma mark - UIViewControllerTransitioningDelegate過場
-- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController: (UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
     AZLPhotoBrowserTransition *transition = [[AZLPhotoBrowserTransition alloc] init];
     transition.isPresent = YES;
     return transition;
 }
 
-- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController: (UIViewController *)dismissed{
     AZLPhotoBrowserTransition *transition = [[AZLPhotoBrowserTransition alloc] init];
     transition.isPresent = NO;
     return transition;
 }
 
-- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator{
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal: (id<UIViewControllerAnimatedTransitioning>)animator{
     return nil;
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
