@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 小圖Image(佔位圖)
 @property (nonatomic, strong, nullable) UIImage *placeholdImage;
-/// 大圖網絡url
+/// 大圖網絡url(需要加入SDExtend模塊才有效)
 @property (nonatomic, strong, nullable) NSString *originUrlString;
 
 /// asset對象

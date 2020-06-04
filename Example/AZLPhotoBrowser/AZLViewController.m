@@ -7,8 +7,9 @@
 //
 
 #import "AZLViewController.h"
-#import <AZLPhotoBrowser/AZLPhotoBrowser.h>
 #import <SDWebImage/SDWebImage.h>
+
+#import <AZLPhotoBrowser/AZLPhotoBrowser.h>
 #import <AZLExtend/AZLExtend.h>
 #import <Photos/Photos.h>
 #import <AZLPhotoBrowser/AZLAlbumViewController.h>

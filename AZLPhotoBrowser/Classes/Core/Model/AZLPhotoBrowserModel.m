@@ -8,7 +8,9 @@
 
 #import "AZLPhotoBrowserModel.h"
 #import <Photos/Photos.h>
-#import <SDWebImage/SDWebImage.h>
+#ifdef AZLSDExtend
+#import "AZLPhotoBrowser+SDExtend.h"
+#endif
 
 @implementation AZLPhotoBrowserModel
 
@@ -68,6 +70,7 @@
 }
 
 - (UIImage *)getImageByData{
+    #ifdef AZLSDExtend
     if (self.isAnimate) {
         UIImage *image = [UIImage sd_imageWithGIFData:self.imageData];
         self.image = image;
@@ -76,6 +79,10 @@
         // 先解壓，不然imageview設置的時候會有明顯的卡頓
         self.image = [UIImage sd_decodedImageWithImage:image];
     }
+    #else
+        self.image = [[UIImage alloc] initWithData:self.imageData];
+    #endif
+    
     return self.image;
 }
 

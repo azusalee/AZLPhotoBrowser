@@ -8,7 +8,9 @@
 
 #import "AZLPhotoBrowserViewController.h"
 #import "AZLPhotoBrowserCollectionViewCell.h"
-#import <SDWebImage/SDWebImage.h>
+#ifdef AZLSDExtend
+#import "AZLPhotoBrowser+SDExtend.h"
+#endif
 #import <AZLExtend/AZLExtend.h>
 #import <Photos/Photos.h>
 #import "AZLPhotoBrowserManager.h"
@@ -237,7 +239,9 @@
             weakCell.browserView.imageView.image = image;
         }];
     }else{
+        #ifdef AZLSDExtend
         [cell.browserView.imageView sd_setImageWithURL:[NSURL URLWithString:model.originUrlString] placeholderImage:model.placeholdImage];
+        #endif
     }
     
     return cell;
@@ -353,8 +357,22 @@
 }
 
 - (void)saveImageWithUrl:(NSString*)imageUrl{
+    #ifdef AZLSDExtend
     NSData *data = [[SDImageCache sharedImageCache] diskImageDataForKey:imageUrl];
-    [self requestSaveImageWithImageData:data];
+    if (data) {
+        [self requestSaveImageWithImageData:data];
+    }else{
+        [[SDWebImageManager sharedManager] loadImageWithURL:[NSURL URLWithString:imageUrl] options:0 progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+            if (finished) {
+                if (data) {
+                    [self requestSaveImageWithImageData:data];
+                }else if (image){
+                    [self requestSaveImageWithImageData:UIImagePNGRepresentation(image)];
+                }
+            }
+        }];
+    }
+    #endif
 }
 
 #pragma mark - UIViewControllerTransitioningDelegate過場

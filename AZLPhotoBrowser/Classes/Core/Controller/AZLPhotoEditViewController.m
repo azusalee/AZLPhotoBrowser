@@ -6,8 +6,10 @@
 //
 
 #import "AZLPhotoEditViewController.h"
+#ifdef AZLSDExtend
+#import "AZLPhotoBrowser+SDExtend.h"
+#endif
 #import <AZLExtend/AZLExtend.h>
-#import <SDWebImage/SDWebImage.h>
 #import "AZLPhotoBrowserView.h"
 #import "AZLPhotoBrowserManager.h"
 #import "AZLEditDrawView.h"
@@ -121,9 +123,11 @@
             weakSelf.browserView.imageView.image = image;
         }];
     }else{
+        #ifdef AZLSDExtend
         [self.browserView.imageView sd_setImageWithURL:[NSURL URLWithString:model.originUrlString] placeholderImage:model.placeholdImage completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             weakSelf.photoModel.image = image;
         }];
+        #endif
     }
     
     [self.view addSubview:self.browserView];
