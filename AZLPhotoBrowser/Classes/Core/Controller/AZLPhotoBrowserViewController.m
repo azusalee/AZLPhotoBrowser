@@ -211,6 +211,7 @@
     if (self.showingIndex != showingIndex) {
         _showingIndex = showingIndex;
         [self showingIndexDidChange];
+        [self.delegate photoBrowserViewControllerShowingIndexDidChange:self];
     }
 }
 
@@ -261,11 +262,40 @@
         if (model.originUrlString.length > 0) {
             [self saveImageWithUrl:model.originUrlString];
         }else{
-            [self saveImageWithImageData:
+            [self requestSaveImageWithImageData:
             UIImagePNGRepresentation(cell.browserView.imageView.image)];
         }
     }]];
     [alertVC azl_presentSelf];
+}
+
+- (void)requestSaveImageWithImageData:(NSData*)data{
+    // 請求權限
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (status == PHAuthorizationStatusAuthorized) {
+                [self saveImageWithImageData:data];
+                
+            }else{
+                UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.photoAuthAlertTitleString message:[AZLPhotoBrowserManager sharedInstance].theme.photoAuthAlertContentString preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction *action1 = [UIAlertAction actionWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.photoAuthOpenString style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                        [[UIApplication sharedApplication] openURL:url];
+                    }
+                }];
+                UIAlertAction *action2 = [UIAlertAction actionWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.cancelString style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                
+                }];
+                
+                [alertViewController addAction:action1];
+                [alertViewController addAction:action2];
+                
+                [alertViewController azl_presentSelf];
+            }
+        });
+    }];
 }
 
 - (void)saveImageWithImageData:(NSData*)data{
@@ -302,19 +332,29 @@
         //        [collectionRequest addAssets:@[placeholder]];
         
     } completionHandler:^(BOOL success, NSError * _Nullable error) {
-        
         // 3. 判断是否出错, 如果报错, 声明保存不成功
-        //        if (error) {
-        //            [SVProgressHUD showErrorWithStatus:@"保存失败"];
-        //        } else {
-        //            [SVProgressHUD showSuccessWithStatus:@"保存成功"];
-        //        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *alertContent = @"";
+            if (error) {
+                alertContent = [AZLPhotoBrowserManager sharedInstance].theme.photoSaveImageFailString;
+            } else {
+                alertContent = [AZLPhotoBrowserManager sharedInstance].theme.photoSaveImageSuccessString;
+            }
+            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:alertContent message:nil preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction *action1 = [UIAlertAction actionWithTitle:[AZLPhotoBrowserManager sharedInstance].theme.confirmString style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+            }];
+            
+            [alertViewController addAction:action1];
+            [alertViewController azl_presentSelf];
+        });
     }];
 }
 
 - (void)saveImageWithUrl:(NSString*)imageUrl{
     NSData *data = [[SDImageCache sharedImageCache] diskImageDataForKey:imageUrl];
-    [self saveImageWithImageData:data];
+    [self requestSaveImageWithImageData:data];
 }
 
 #pragma mark - UIViewControllerTransitioningDelegate過場

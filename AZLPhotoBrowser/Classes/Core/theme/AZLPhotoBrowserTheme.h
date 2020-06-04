@@ -44,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 // 自定義文字
 // 完成
 @property (nonatomic, strong) NSString *finishString;
+// 確定
+@property (nonatomic, strong) NSString *confirmString;
 // 取消
 @property (nonatomic, strong) NSString *cancelString;
 // 全部
@@ -63,6 +65,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *photoAuthOpenString;
 // 保存到相冊
 @property (nonatomic, strong) NSString *photoSaveImageString;
+
+// 保存到相冊成功
+@property (nonatomic, strong) NSString *photoSaveImageSuccessString;
+// 保存到相冊失敗
+@property (nonatomic, strong) NSString *photoSaveImageFailString;
 
 // 編輯
 @property (nonatomic, strong) NSString *editString;

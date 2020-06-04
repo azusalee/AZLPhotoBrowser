@@ -30,12 +30,15 @@
         _allString = @"全部";
         _animateString = @"动图";
         _cancelString = @"取消";
+        _confirmString = @"確定";
         //_moreThanMaxAlertString = @"你最多只能选择9张照片";
         _moreThanMaxAlertConfirmString = @"我知道了";
         _photoAuthAlertTitleString = @"访问相册";
         _photoAuthAlertContentString = @"您还没有打开相册权限";
         _photoAuthOpenString = @"去打开";
         _photoSaveImageString = @"保存到相冊";
+        _photoSaveImageSuccessString = @"保存成功";
+        _photoSaveImageFailString = @"保存失敗";
         _editString = @"编辑";
         [self setup];
     }

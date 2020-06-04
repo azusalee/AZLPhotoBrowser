@@ -252,7 +252,11 @@
 
 - (void)leftBarItemDidTap:(id)sender{
     if (self.navigationController) {
-        [self.navigationController popViewControllerAnimated:YES];
+        if (self.navigationController.viewControllers.firstObject == self) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }else{
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }else{
         [self dismissViewControllerAnimated:YES completion:nil];
     }
