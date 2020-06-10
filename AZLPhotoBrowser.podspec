@@ -40,10 +40,10 @@ TODO: Add long description of the pod here.
   # s.frameworks = 'UIKit', 'MapKit'
   #s.dependency 'SDWebImage'
   #s.dependency 'AZLExtend'
+  #s.default_subspec = 'Core'
   
   s.subspec 'Core' do |core|
     core.source_files = 'AZLPhotoBrowser/Classes/Core/**/*'
-    core.dependency 'SDWebImage'
     core.dependency 'AZLExtend'
     core.dependency 'AZLPhotoBrowser/EditTool'
   end
@@ -55,8 +55,8 @@ TODO: Add long description of the pod here.
     sd.pod_target_xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'AZLSDExtend=1'}
   end
   
-  s.subspec 'EditTool' do |core|
-    core.source_files = 'AZLPhotoBrowser/Classes/EditTool/**/*'
-    core.dependency 'AZLExtend', '~> 0.1.4'
+  s.subspec 'EditTool' do |tool|
+    tool.source_files = 'AZLPhotoBrowser/Classes/EditTool/**/*'
+    tool.dependency 'AZLExtend', '~> 0.1.4'
   end
 end

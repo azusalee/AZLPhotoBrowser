@@ -80,10 +80,45 @@
         self.image = [UIImage sd_decodedImageWithImage:image];
     }
     #else
-        self.image = [[UIImage alloc] initWithData:self.imageData];
+        UIImage *image = [[UIImage alloc] initWithData:self.imageData];
+        self.image = [[UIImage alloc] initWithCGImage:[self CGImageCreateDecoded:image.CGImage] scale:image.scale orientation:image.imageOrientation];
     #endif
+    
     
     return self.image;
 }
+
+#ifndef AZLSDExtend
+- (CGImageRef)CGImageCreateDecoded:(CGImageRef)imageRef {
+    if (!imageRef) {
+        return NULL;
+    }
+    CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(imageRef) & kCGBitmapAlphaInfoMask;
+    size_t width = CGImageGetWidth(imageRef);
+    size_t height = CGImageGetHeight(imageRef);
+    BOOL hasAlpha = NO;
+    if (alphaInfo == kCGImageAlphaPremultipliedLast ||
+        alphaInfo == kCGImageAlphaPremultipliedFirst ||
+        alphaInfo == kCGImageAlphaLast ||
+        alphaInfo == kCGImageAlphaFirst) {
+        hasAlpha = YES;
+    }
+
+    // BGRA8888 (premultiplied) or BGRX8888
+    // same as UIGraphicsBeginImageContext() and -[UIView drawRect:]
+    CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Host;
+    bitmapInfo |= hasAlpha ? kCGImageAlphaPremultipliedFirst : kCGImageAlphaNoneSkipFirst;
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(NULL, width, height, 8, 0, colorSpace, bitmapInfo);
+    if (!context) return NULL;
+
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef); // decode
+    CGImageRef newImage = CGBitmapContextCreateImage(context);
+    CFRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    return newImage;
+}
+#endif
 
 @end
