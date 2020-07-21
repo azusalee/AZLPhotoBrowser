@@ -49,7 +49,7 @@ AZLPointDistanceBetweenPoints(CGPoint pointA, CGPoint pointB)
     return AZLPointHypotenuseOfPoint(AZLPointDifferentialPointOfPoints(pointA, pointB));
 }
 
-@interface AZLWeightPoint : NSObject
+@interface AZLMyWeightPoint : NSObject
 
 @property (nonatomic, assign) CGPoint point;
 @property (nonatomic, assign) CGFloat weight;
@@ -60,13 +60,13 @@ AZLPointDistanceBetweenPoints(CGPoint pointA, CGPoint pointB)
 
 @interface UIBezierPath (AZLSignaturePath)
 
-- (void)azl_addDotWithWeightedPoint:(AZLWeightPoint *)pointA;
+- (void)azl_addDotWithWeightedPoint:(AZLMyWeightPoint *)pointA;
 
-- (void)azl_addLineWithPointA:(AZLWeightPoint*)pointA pointB:(AZLWeightPoint*)pointB;
+- (void)azl_addLineWithPointA:(AZLMyWeightPoint*)pointA pointB:(AZLMyWeightPoint*)pointB;
 
-- (void)azl_addQuadCurveWithWeightedPointA:(AZLWeightPoint *)pointA pointB:(AZLWeightPoint *)pointB pointC:(AZLWeightPoint *)pointC;
+- (void)azl_addQuadCurveWithWeightedPointA:(AZLMyWeightPoint *)pointA pointB:(AZLMyWeightPoint *)pointB pointC:(AZLMyWeightPoint *)pointC;
 
-- (void)azl_addBezierCurveWithWeightedPointA:(AZLWeightPoint *)pointA pointB:(AZLWeightPoint *)pointB pointC:(AZLWeightPoint *)pointC pointD:(AZLWeightPoint *)pointD;
+- (void)azl_addBezierCurveWithWeightedPointA:(AZLMyWeightPoint *)pointA pointB:(AZLMyWeightPoint *)pointB pointC:(AZLMyWeightPoint *)pointC pointD:(AZLMyWeightPoint *)pointD;
 
 @end
 
@@ -91,13 +91,13 @@ typedef struct
 
 @implementation UIBezierPath (AZLSignaturePath)
 
-- (void)azl_addDotWithWeightedPoint:(AZLWeightPoint *)pointA
+- (void)azl_addDotWithWeightedPoint:(AZLMyWeightPoint *)pointA
 {
     [self moveToPoint:pointA.point];
     [self addArcWithCenter:pointA.point radius:pointA.weight startAngle:0 endAngle:(CGFloat)M_PI * 2.0 clockwise:YES];
 }
 
-- (void)azl_addLineWithPointA:(AZLWeightPoint *)pointA pointB:(AZLWeightPoint *)pointB{
+- (void)azl_addLineWithPointA:(AZLMyWeightPoint *)pointA pointB:(AZLMyWeightPoint *)pointB{
     AZLLinePair linePair = [UIBezierPath _linesPerpendicularToLineWithWeightedPointA:pointA pointB:pointB];
     [self moveToPoint:linePair.firstLine.startPoint];
     [self addLineToPoint:linePair.secondLine.startPoint];
@@ -106,7 +106,7 @@ typedef struct
     [self closePath];
 }
 
-- (void)azl_addQuadCurveWithWeightedPointA:(AZLWeightPoint *)pointA pointB:(AZLWeightPoint *)pointB pointC:(AZLWeightPoint *)pointC
+- (void)azl_addQuadCurveWithWeightedPointA:(AZLMyWeightPoint *)pointA pointB:(AZLMyWeightPoint *)pointB pointC:(AZLMyWeightPoint *)pointC
 {
     AZLLinePair linePairAB = [self.class _linesPerpendicularToLineWithWeightedPointA:pointA pointB:pointB];
     AZLLinePair linePairBC = [self.class _linesPerpendicularToLineWithWeightedPointA:pointB pointB:pointC];
@@ -121,7 +121,7 @@ typedef struct
     [self closePath];
 }
 
-- (void)azl_addBezierCurveWithWeightedPointA:(AZLWeightPoint *)pointA pointB:(AZLWeightPoint *)pointB pointC:(AZLWeightPoint *)pointC pointD:(AZLWeightPoint *)pointD
+- (void)azl_addBezierCurveWithWeightedPointA:(AZLMyWeightPoint *)pointA pointB:(AZLMyWeightPoint *)pointB pointC:(AZLMyWeightPoint *)pointC pointD:(AZLMyWeightPoint *)pointD
 {
     AZLLinePair linePairAB = [self.class _linesPerpendicularToLineWithWeightedPointA:pointA pointB:pointB];
     AZLLinePair linePairBC = [self.class _linesPerpendicularToLineWithWeightedPointA:pointB pointB:pointC];
@@ -141,7 +141,7 @@ typedef struct
 
 #pragma mark - Private
 
-+ (AZLLinePair)_linesPerpendicularToLineWithWeightedPointA:(AZLWeightPoint*)pointA pointB:(AZLWeightPoint*)pointB
++ (AZLLinePair)_linesPerpendicularToLineWithWeightedPointA:(AZLMyWeightPoint*)pointA pointB:(AZLMyWeightPoint*)pointB
 {
     AZLLine line = (AZLLine){pointA.point, pointB.point};
     
@@ -194,7 +194,7 @@ typedef struct
 
 @end
 
-@implementation AZLWeightPoint
+@implementation AZLMyWeightPoint
 + (CGFloat)weightWithPointA:(CGPoint)pointA pointB:(CGPoint)pointB{
     CGFloat length = AZLPointDistanceBetweenPoints(pointA, pointB);
     
@@ -224,10 +224,10 @@ typedef struct
 @property (nonatomic, strong) UIBezierPath *path;
 @property (nonatomic, strong) UIBezierPath *tmpPath;
 
-@property (nonatomic, strong) AZLWeightPoint *point0;
-@property (nonatomic, strong) AZLWeightPoint *point1;
-@property (nonatomic, strong) AZLWeightPoint *point2;
-@property (nonatomic, strong) AZLWeightPoint *point3;
+@property (nonatomic, strong) AZLMyWeightPoint *point0;
+@property (nonatomic, strong) AZLMyWeightPoint *point1;
+@property (nonatomic, strong) AZLMyWeightPoint *point2;
+@property (nonatomic, strong) AZLMyWeightPoint *point3;
 
 @property (nonatomic, assign) NSInteger nextPointIndex;
 
@@ -256,7 +256,7 @@ typedef struct
     [super touchBeganWithPoint:point];
     self.path = [[UIBezierPath alloc] init];
     self.tmpPath = [[UIBezierPath alloc] init];
-    AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
+    AZLMyWeightPoint *weightPoint = [[AZLMyWeightPoint alloc] init];
     weightPoint.point = point;
     weightPoint.weight = self.lineWeight;
     self.point0 = weightPoint;
@@ -272,7 +272,7 @@ typedef struct
 
 - (void)touchMoveWithPoint:(CGPoint)point{
     [super touchMoveWithPoint:point];
-    AZLWeightPoint *previousPoint;
+    AZLMyWeightPoint *previousPoint;
     if (self.nextPointIndex == 1) {
         previousPoint = self.point0;
     }else if (self.nextPointIndex == 2){
@@ -291,9 +291,9 @@ typedef struct
     //分開4中情況，1，2，3，4個點的時候分別處理
     //只有四個點的時候為完整的，添加到path；其他的情況都為臨時線，添加到tmpPath
     if (self.nextPointIndex == 1){
-        AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
+        AZLMyWeightPoint *weightPoint = [[AZLMyWeightPoint alloc] init];
         weightPoint.point = point;
-        weightPoint.weight = [AZLWeightPoint weightWithPointA:self.point0.point pointB:point];
+        weightPoint.weight = [AZLMyWeightPoint weightWithPointA:self.point0.point pointB:point];
         self.point1 = weightPoint;
         
         [self.tmpPath removeAllPoints];
@@ -302,9 +302,9 @@ typedef struct
         
         self.nextPointIndex = 2;
     }else if (self.nextPointIndex == 2){
-        AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
+        AZLMyWeightPoint *weightPoint = [[AZLMyWeightPoint alloc] init];
         weightPoint.point = point;
-        weightPoint.weight = [AZLWeightPoint weightWithPointA:self.point1.point pointB:point];
+        weightPoint.weight = [AZLMyWeightPoint weightWithPointA:self.point1.point pointB:point];
         self.point2 = weightPoint;
         
         [self.tmpPath removeAllPoints];
@@ -314,9 +314,9 @@ typedef struct
         self.nextPointIndex = 3;
         
     }else if (self.nextPointIndex == 3) {
-        AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
+        AZLMyWeightPoint *weightPoint = [[AZLMyWeightPoint alloc] init];
         weightPoint.point = point;
-        weightPoint.weight = [AZLWeightPoint weightWithPointA:self.point2.point pointB:point];
+        weightPoint.weight = [AZLMyWeightPoint weightWithPointA:self.point2.point pointB:point];
         self.point3 = weightPoint;
         
         [self.tmpPath removeAllPoints];
@@ -327,18 +327,18 @@ typedef struct
     }else if (self.nextPointIndex == 4){
         //第四個點的時候，為完整的線，添加到path，然後重新計算pointIndex
         CGPoint point3 = AZLPointAveragePoints(self.point2.point, point);
-        AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
+        AZLMyWeightPoint *weightPoint = [[AZLMyWeightPoint alloc] init];
         weightPoint.point = point3;
-        weightPoint.weight = [AZLWeightPoint weightWithPointA:self.point2.point pointB:point3];
+        weightPoint.weight = [AZLMyWeightPoint weightWithPointA:self.point2.point pointB:point3];
         self.point3 = weightPoint;
         
         [self.path azl_addBezierCurveWithWeightedPointA:self.point0 pointB:self.point1 pointC:self.point2 pointD:self.point3];
         
         {
             self.point0 = self.point3;
-            AZLWeightPoint *weightPoint = [[AZLWeightPoint alloc] init];
+            AZLMyWeightPoint *weightPoint = [[AZLMyWeightPoint alloc] init];
             weightPoint.point = point;
-            weightPoint.weight = [AZLWeightPoint weightWithPointA:previousPoint.point pointB:point];
+            weightPoint.weight = [AZLMyWeightPoint weightWithPointA:previousPoint.point pointB:point];
             self.point1 = weightPoint;
             self.nextPointIndex = 2;
             
