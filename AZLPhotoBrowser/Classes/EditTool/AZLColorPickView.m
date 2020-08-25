@@ -17,6 +17,11 @@
 
 @implementation AZLColorPickView
 
+- (void)awakeFromNib{
+    [super awakeFromNib];
+    [self setup];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         [self setup];
@@ -64,7 +69,13 @@
 - (void)viewDidPan:(UIPanGestureRecognizer *)gesture{
     if (gesture.state == UIGestureRecognizerStateChanged) {
         CGPoint point = [gesture locationInView:self];
-        self.selectView.centerX = point.x;
+        if (point.x < 0) {
+            self.selectView.centerX = 0;
+        }else if (point.x > self.bounds.size.width) {
+            self.selectView.centerX = self.bounds.size.width;
+        }else{
+            self.selectView.centerX = point.x;
+        }
     }else if (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateFailed) {
         CGPoint point = self.selectView.center;
         UIColor *color = [self azl_colorAtPoint:point];
