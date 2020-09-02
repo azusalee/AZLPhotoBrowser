@@ -38,16 +38,31 @@
     option.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     [[PHImageManager defaultManager] requestImageDataForAsset:self.asset options:option resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
-        weakSelf.imageData = imageData;
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [weakSelf getImageByData];
-            if (resultHandler) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    resultHandler(weakSelf.image);
+        if (imageData != nil) {
+            weakSelf.imageData = imageData;
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [weakSelf getImageByData];
+                if (resultHandler) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        resultHandler(weakSelf.image);
+                    });
+                }
+            });
+        }else{
+            [[PHImageManager defaultManager] requestImageForAsset:self.asset targetSize:UIScreen.mainScreen.bounds.size contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                weakSelf.imageData = UIImageJPEGRepresentation(result, 1);
+                dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                    [weakSelf getImageByData];
+                    if (resultHandler) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            resultHandler(weakSelf.image);
+                        });
+                    }
                 });
-            }
-        });
+            }];
+        }
     }];
+    
 }
 
 - (void)requestImageData:(void (^)(NSData *_Nullable imageData))resultHandler{
@@ -62,10 +77,19 @@
     option.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     [[PHImageManager defaultManager] requestImageDataForAsset:self.asset options:option resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
-        weakSelf.imageData = imageData;
-        if (resultHandler) {
-            resultHandler(weakSelf.imageData);
-        };
+        if (imageData != nil) {
+            weakSelf.imageData = imageData;
+            if (resultHandler) {
+                resultHandler(weakSelf.imageData);
+            };
+        }else{
+            [[PHImageManager defaultManager] requestImageForAsset:self.asset targetSize:UIScreen.mainScreen.bounds.size contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                weakSelf.imageData = UIImageJPEGRepresentation(result, 1);
+                if (resultHandler) {
+                    resultHandler(weakSelf.imageData);
+                };
+            }];
+        }
     }];
 }
 
