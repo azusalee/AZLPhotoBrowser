@@ -50,15 +50,17 @@
             });
         }else{
             [[PHImageManager defaultManager] requestImageForAsset:self.asset targetSize:UIScreen.mainScreen.bounds.size contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                weakSelf.imageData = UIImageJPEGRepresentation(result, 1);
-                dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                    [weakSelf getImageByData];
-                    if (resultHandler) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            resultHandler(weakSelf.image);
-                        });
-                    }
-                });
+                if (result != nil) {
+                    weakSelf.imageData = UIImageJPEGRepresentation(result, 1);
+                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                        [weakSelf getImageByData];
+                        if (resultHandler) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                resultHandler(weakSelf.image);
+                            });
+                        }
+                    });
+                }
             }];
         }
     }];
@@ -84,10 +86,12 @@
             };
         }else{
             [[PHImageManager defaultManager] requestImageForAsset:self.asset targetSize:UIScreen.mainScreen.bounds.size contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                weakSelf.imageData = UIImageJPEGRepresentation(result, 1);
-                if (resultHandler) {
-                    resultHandler(weakSelf.imageData);
-                };
+                if (result != nil) {
+                    weakSelf.imageData = UIImageJPEGRepresentation(result, 1);
+                    if (resultHandler) {
+                        resultHandler(weakSelf.imageData);
+                    };
+                }
             }];
         }
     }];
