@@ -7,7 +7,17 @@
 
 ## 说明
 
-这是一个用于图片浏览库，包含图片浏览，图片编辑，相册挑选照片的功能，具体请看demo。
+这是一个图片浏览库，包含图片浏览，图片编辑，相册挑选照片的功能，具体请看demo。
+
+<div>
+	<img src="https://github.com/azusalee/AZLPhotoBrowser/Assets/pen.gif" width = "50%" div/>
+	<img src="https://github.com/azusalee/AZLPhotoBrowser/Assets/mosic.gif" width = "50%" div/>
+</div>
+
+<div>
+	<img src="https://github.com/azusalee/AZLPhotoBrowser/Assets/clip.gif" width = "50%" div/>
+       <img src="https://github.com/azusalee/AZLPhotoBrowser/Assets/label.gif" width = "50%" div/>   
+</div>
 
 ## Example
 
