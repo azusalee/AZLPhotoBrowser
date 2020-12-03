@@ -10,13 +10,13 @@
 这是一个图片浏览库，包含图片浏览，图片编辑，相册挑选照片的功能，具体请看demo。
 
 <div>
-	<img src="https://github.com/azusalee/AZLPhotoBrowser/tree/master/Assets/pen.gif" width = "50%" div/>
-	<img src="https://github.com/azusalee/AZLPhotoBrowser/tree/master/Assets/mosic.gif" width = "50%" div/>
+	<img src="https://github.com/azusalee/AZLPhotoBrowser/raw/master/Assets/pen.gif" width = "50%" div/>
+	<img src="https://github.com/azusalee/AZLPhotoBrowser/raw/master/Assets/mosic.gif" width = "50%" div/>
 </div>
 
 <div>
-	<img src="https://github.com/azusalee/AZLPhotoBrowser/tree/master/Assets/clip.gif" width = "50%" div/>
-       <img src="https://github.com/azusalee/AZLPhotoBrowser/tree/master/Assets/label.gif" width = "50%" div/>   
+	<img src="https://github.com/azusalee/AZLPhotoBrowser/raw/master/Assets/clip.gif" width = "50%" div/>
+       <img src="https://github.com/azusalee/AZLPhotoBrowser/raw/master/Assets/label.gif" width = "50%" div/>   
 </div>
 
 ## Example
