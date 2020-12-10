@@ -24,6 +24,14 @@
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
+		8CAAB8AA2581D9FE00EEEEAE /* ALDebugListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CAAB8A82581D9FE00EEEEAE /* ALDebugListViewController.m */; };
+		8CAAB8B12581DA1B00EEEEAE /* JumpVCModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CAAB8B02581DA1B00EEEEAE /* JumpVCModel.m */; };
+		8CAAB8BB2581DA6F00EEEEAE /* AZLDemoBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CAAB8B92581DA6F00EEEEAE /* AZLDemoBrowserViewController.m */; };
+		8CAAB8BC2581DA6F00EEEEAE /* AZLDemoBrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CAAB8BA2581DA6F00EEEEAE /* AZLDemoBrowserViewController.xib */; };
+		8CAAB8C62581DAE500EEEEAE /* AZLDemoEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CAAB8C42581DAE500EEEEAE /* AZLDemoEditViewController.m */; };
+		8CAAB8C72581DAE500EEEEAE /* AZLDemoEditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CAAB8C52581DAE500EEEEAE /* AZLDemoEditViewController.xib */; };
+		8CAAB8CE2581DB7800EEEEAE /* AZLDemoAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CAAB8CC2581DB7800EEEEAE /* AZLDemoAlbumViewController.m */; };
+		8CAAB8CF2581DB7800EEEEAE /* AZLDemoAlbumViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CAAB8CD2581DB7800EEEEAE /* AZLDemoAlbumViewController.xib */; };
 		8CF91CEE24512DAA001CB29E /* AZLPhotoBrowser_ExampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF91CED24512DAA001CB29E /* AZLPhotoBrowser_ExampleUITests.m */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +79,19 @@
 		6B9935EB5F8BC7FA4C8E38A8 /* Pods-AZLPhotoBrowser_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AZLPhotoBrowser_Tests.debug.xcconfig"; path = "Target Support Files/Pods-AZLPhotoBrowser_Tests/Pods-AZLPhotoBrowser_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		8CAAB8A82581D9FE00EEEEAE /* ALDebugListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALDebugListViewController.m; sourceTree = "<group>"; };
+		8CAAB8A92581D9FE00EEEEAE /* ALDebugListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALDebugListViewController.h; sourceTree = "<group>"; };
+		8CAAB8AF2581DA1B00EEEEAE /* JumpVCModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JumpVCModel.h; sourceTree = "<group>"; };
+		8CAAB8B02581DA1B00EEEEAE /* JumpVCModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JumpVCModel.m; sourceTree = "<group>"; };
+		8CAAB8B82581DA6F00EEEEAE /* AZLDemoBrowserViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AZLDemoBrowserViewController.h; sourceTree = "<group>"; };
+		8CAAB8B92581DA6F00EEEEAE /* AZLDemoBrowserViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AZLDemoBrowserViewController.m; sourceTree = "<group>"; };
+		8CAAB8BA2581DA6F00EEEEAE /* AZLDemoBrowserViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AZLDemoBrowserViewController.xib; sourceTree = "<group>"; };
+		8CAAB8C32581DAE500EEEEAE /* AZLDemoEditViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AZLDemoEditViewController.h; sourceTree = "<group>"; };
+		8CAAB8C42581DAE500EEEEAE /* AZLDemoEditViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AZLDemoEditViewController.m; sourceTree = "<group>"; };
+		8CAAB8C52581DAE500EEEEAE /* AZLDemoEditViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AZLDemoEditViewController.xib; sourceTree = "<group>"; };
+		8CAAB8CB2581DB7800EEEEAE /* AZLDemoAlbumViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AZLDemoAlbumViewController.h; sourceTree = "<group>"; };
+		8CAAB8CC2581DB7800EEEEAE /* AZLDemoAlbumViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AZLDemoAlbumViewController.m; sourceTree = "<group>"; };
+		8CAAB8CD2581DB7800EEEEAE /* AZLDemoAlbumViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AZLDemoAlbumViewController.xib; sourceTree = "<group>"; };
 		8CF91CEB24512DAA001CB29E /* AZLPhotoBrowser_ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AZLPhotoBrowser_ExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CF91CED24512DAA001CB29E /* AZLPhotoBrowser_ExampleUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AZLPhotoBrowser_ExampleUITests.m; sourceTree = "<group>"; };
 		8CF91CEF24512DAA001CB29E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -154,6 +175,8 @@
 			children = (
 				6003F59C195388D20070C39A /* AZLAppDelegate.h */,
 				6003F59D195388D20070C39A /* AZLAppDelegate.m */,
+				8CAAB8AE2581DA1000EEEEAE /* Model */,
+				8CAAB8A72581D9E700EEEEAE /* Section */,
 				6003F5A5195388D20070C39A /* AZLViewController.h */,
 				6003F5A6195388D20070C39A /* AZLViewController.m */,
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
@@ -203,6 +226,57 @@
 				D06116225CB56237C4B9D19E /* LICENSE */,
 			);
 			name = "Podspec Metadata";
+			sourceTree = "<group>";
+		};
+		8CAAB8A72581D9E700EEEEAE /* Section */ = {
+			isa = PBXGroup;
+			children = (
+				8CAAB8A92581D9FE00EEEEAE /* ALDebugListViewController.h */,
+				8CAAB8A82581D9FE00EEEEAE /* ALDebugListViewController.m */,
+				8CAAB8B72581DA3900EEEEAE /* Album */,
+				8CAAB8B62581DA3400EEEEAE /* Edit */,
+				8CAAB8B52581DA2800EEEEAE /* Browser */,
+			);
+			name = Section;
+			sourceTree = "<group>";
+		};
+		8CAAB8AE2581DA1000EEEEAE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				8CAAB8AF2581DA1B00EEEEAE /* JumpVCModel.h */,
+				8CAAB8B02581DA1B00EEEEAE /* JumpVCModel.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		8CAAB8B52581DA2800EEEEAE /* Browser */ = {
+			isa = PBXGroup;
+			children = (
+				8CAAB8B82581DA6F00EEEEAE /* AZLDemoBrowserViewController.h */,
+				8CAAB8B92581DA6F00EEEEAE /* AZLDemoBrowserViewController.m */,
+				8CAAB8BA2581DA6F00EEEEAE /* AZLDemoBrowserViewController.xib */,
+			);
+			name = Browser;
+			sourceTree = "<group>";
+		};
+		8CAAB8B62581DA3400EEEEAE /* Edit */ = {
+			isa = PBXGroup;
+			children = (
+				8CAAB8C32581DAE500EEEEAE /* AZLDemoEditViewController.h */,
+				8CAAB8C42581DAE500EEEEAE /* AZLDemoEditViewController.m */,
+				8CAAB8C52581DAE500EEEEAE /* AZLDemoEditViewController.xib */,
+			);
+			name = Edit;
+			sourceTree = "<group>";
+		};
+		8CAAB8B72581DA3900EEEEAE /* Album */ = {
+			isa = PBXGroup;
+			children = (
+				8CAAB8CB2581DB7800EEEEAE /* AZLDemoAlbumViewController.h */,
+				8CAAB8CC2581DB7800EEEEAE /* AZLDemoAlbumViewController.m */,
+				8CAAB8CD2581DB7800EEEEAE /* AZLDemoAlbumViewController.xib */,
+			);
+			name = Album;
 			sourceTree = "<group>";
 		};
 		8CF91CEC24512DAA001CB29E /* AZLPhotoBrowser_ExampleUITests */ = {
@@ -333,7 +407,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
+				8CAAB8BC2581DA6F00EEEEAE /* AZLDemoBrowserViewController.xib in Resources */,
 				71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */,
+				8CAAB8C72581DAE500EEEEAE /* AZLDemoEditViewController.xib in Resources */,
+				8CAAB8CF2581DB7800EEEEAE /* AZLDemoAlbumViewController.xib in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
 			);
@@ -431,7 +508,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F59E195388D20070C39A /* AZLAppDelegate.m in Sources */,
+				8CAAB8C62581DAE500EEEEAE /* AZLDemoEditViewController.m in Sources */,
+				8CAAB8AA2581D9FE00EEEEAE /* ALDebugListViewController.m in Sources */,
+				8CAAB8CE2581DB7800EEEEAE /* AZLDemoAlbumViewController.m in Sources */,
+				8CAAB8B12581DA1B00EEEEAE /* JumpVCModel.m in Sources */,
 				6003F5A7195388D20070C39A /* AZLViewController.m in Sources */,
+				8CAAB8BB2581DA6F00EEEEAE /* AZLDemoBrowserViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

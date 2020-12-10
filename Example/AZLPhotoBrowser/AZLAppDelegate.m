@@ -7,12 +7,22 @@
 //
 
 #import "AZLAppDelegate.h"
+#import "ALDebugListViewController.h"
 
 @implementation AZLAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
+    ALDebugListViewController *controller = [[ALDebugListViewController alloc] init];
+    UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:controller];
+    
+    self.window.rootViewController = navVC;
+    [self.window makeKeyAndVisible];
+    
+    
     return YES;
 }
 

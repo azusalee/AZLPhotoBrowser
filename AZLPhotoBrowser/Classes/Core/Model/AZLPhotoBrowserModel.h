@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) UIView *editTileView;
 /// 编辑过的图片
 @property (nonatomic, strong, nullable) UIImage *editImage;
-/// 编辑过的图片的縮率圖
+/// 编辑过的图片的縮略圖
 @property (nonatomic, strong, nullable) UIImage *smallEditImage;
 
 // 如果imageData和image沒有值，會根據設置的asset來獲得圖片，並設置imageData和image的值
